@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TestMachine Product Strategy — Path to 3x Revenue Growth</title>
+  <meta name="description" content="Board-facing product strategy: Systematic path from $720K to $2.16M+ ARR through product-revenue alignment and self-serve offerings.">
+  <meta property="og:title" content="TestMachine Product Strategy — 3x Revenue Growth">
+  <meta property="og:description" content="Critical product strategy changes to address pipeline crisis and unlock 3x revenue growth potential.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://product.lightscalar.net">
+  <link rel="icon" href="assets/logo-icon-white.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1771885203">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Custom styles for product strategy presentation */
+    .strategy-hero {
+      background: radial-gradient(ellipse at center top, oklch(0.25 0.08 192 / 0.3) 0%, transparent 70%), 
+                  linear-gradient(135deg, var(--bg-deeper) 0%, var(--bg) 100%);
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .crisis-badge {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+      display: inline-block;
+      box-shadow: 0 4px 12px oklch(0.5 0.2 0 / 0.3);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin: 48px 0;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      transition: all var(--transition);
+    }
+
+    .metric-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 32px oklch(0.72 0.12 192 / 0.1);
+    }
+
+    .metric-number {
+      font-family: var(--font-mono);
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--fg-muted);
+      margin-bottom: 12px;
+    }
+
+    .metric-change {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .metric-change.positive {
+      color: #22c55e;
+    }
+
+    .metric-change.negative {
+      color: #ef4444;
+    }
+
+    .chart-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 32px 0;
+    }
+
+    .chart-title {
+      font-family: var(--font-body);
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--fg);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 32px;
+      margin: 48px 0;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    }
+
+    .feature-priority {
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .feature-title {
+      font-family: var(--font-body);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .feature-impact {
+      background: var(--bg-raised);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .impact-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--fg-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .impact-value {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .timeline-container {
+      margin: 48px 0;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--accent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 48px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 32px;
+      margin-left: 20px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -41px;
+      top: 32px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 4px solid var(--bg);
+    }
+
+    .timeline-period {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .milestone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .milestone {
+      background: var(--bg-raised);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .milestone-title {
+      font-family: var(--font-body);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .milestone-desc {
+      font-size: 14px;
+      color: var(--fg-muted);
+      line-height: 1.5;
+    }
+
+    .cta-section {
+      background: linear-gradient(135deg, var(--accent-glow), transparent);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 48px 32px;
+      text-align: center;
+      margin: 64px 0;
+    }
+
+    .urgency-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .section-title {
+      font-family: var(--font-body);
+      font-size: 48px;
+      font-weight: 700;
+      margin: 16px 0;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      font-size: 20px;
+      color: var(--fg-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="urgency-indicator">
+    BOARD DEADLINE: SUNDAY 12:00 PM
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo-icon-white.png" alt="" class="nav-logo-icon">
+        <span class="nav-logo-text">TestMachine</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#crisis" class="nav-link">Crisis Analysis</a>
+        <a href="#features" class="nav-link">P0 Features</a>
+        <a href="#growth" class="nav-link">Revenue Growth</a>
+        <a href="#timeline" class="nav-link">Timeline</a>
+      </div>
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn--secondary btn--nav">← Back to Main Site</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="strategy-hero" id="crisis">
+    <div class="container">
+      <div class="hero-content">
+        <div class="crisis-badge">URGENT: PIPELINE CRISIS IDENTIFIED</div>
+        <h1 class="hero-title">Product Strategy Realignment<br>Path to 3x Revenue Growth</h1>
+        <p class="hero-subtitle">Systematic approach to address 90% conversion failure and unlock $2.16M+ ARR through product-revenue alignment and self-serve offerings.</p>
+        
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-number">$720K</div>
+            <div class="metric-label">Current ARR (Coinbase)</div>
+            <div class="metric-change positive">Baseline Revenue</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number">$2.16M</div>
+            <div class="metric-label">Target ARR (3x Growth)</div>
+            <div class="metric-change positive">+200% Increase</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number">90%</div>
+            <div class="metric-label">Conversion Failure Rate</div>
+            <div class="metric-change negative">Pipeline Crisis</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number">A-</div>
+            <div class="metric-label">Technology Grade</div>
+            <div class="metric-change positive">Strong Foundation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pipeline Analysis -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Pipeline Analysis</div>
+        <h2 class="section-title">The Crisis: 90% Conversion Failure</h2>
+        <p class="section-subtitle">Despite A- technology, our pipeline shows massive conversion failure. This is a product-revenue alignment problem, not a capability problem.</p>
+      </div>
+
+      <div class="chart-container">
+        <h3 class="chart-title">Conversion Funnel Analysis</h3>
+        <canvas id="pipelineChart" width="800" height="400"></canvas>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-number">78%</div>
+          <div class="metric-label">Stuck in Prospecting</div>
+          <div class="metric-change negative">Never Progress</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">13%</div>
+          <div class="metric-label">Reach Outreach Stage</div>
+          <div class="metric-change negative">Limited Engagement</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">8%</div>
+          <div class="metric-label">Actually Engaged</div>
+          <div class="metric-change negative">Critical Bottleneck</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">1%</div>
+          <div class="metric-label">Convert to Revenue</div>
+          <div class="metric-change negative">Massive Gap</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P0 Features -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Critical Features</div>
+        <h2 class="section-title">P0 Features: Remove Conversion Barriers</h2>
+        <p class="section-subtitle">Three critical features to eliminate friction and enable self-serve adoption at scale.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-priority">P0 FEATURE</div>
+          <h3 class="feature-title">Interactive Pricing Calculator</h3>
+          <p>Transparent, real-time pricing based on contract complexity, transaction volume, and risk level. Eliminates "contact sales" friction.</p>
+          <div class="feature-impact">
+            <div class="impact-label">Revenue Impact</div>
+            <div class="impact-value">$500K+ ARR Potential</div>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-priority">P0 FEATURE</div>
+          <h3 class="feature-title">Self-Serve Demo Environment</h3>
+          <p>Sandbox environment where prospects can test their contracts immediately. Upload, scan, get results in under 5 minutes.</p>
+          <div class="feature-impact">
+            <div class="impact-label">Conversion Impact</div>
+            <div class="impact-value">40%+ Engagement Boost</div>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-priority">P0 FEATURE</div>
+          <h3 class="feature-title">Usage Analytics Dashboard</h3>
+          <p>Real-time visibility into security posture, vulnerability trends, and ROI metrics. Makes value tangible and measurable.</p>
+          <div class="feature-impact">
+            <div class="impact-label">Retention Impact</div>
+            <div class="impact-value">60%+ Churn Reduction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Revenue Growth -->
+  <section class="section" id="growth">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Revenue Strategy</div>
+        <h2 class="section-title">Path to $2.16M+ ARR</h2>
+        <p class="section-subtitle">Two primary revenue streams: self-serve expansion and exchange partnerships.</p>
+      </div>
+
+      <div class="chart-container">
+        <h3 class="chart-title">Revenue Growth Projection</h3>
+        <canvas id="revenueChart" width="800" height="400"></canvas>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-number">$1.56M</div>
+          <div class="metric-label">Self-Serve Opportunity</div>
+          <div class="metric-change positive">Tiered Pricing Model</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">$1.68M</div>
+          <div class="metric-label">Exchange Expansion</div>
+          <div class="metric-change positive">4-5 Exchanges × $35K</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">$3.24M</div>
+          <div class="metric-label">Total Addressable</div>
+          <div class="metric-change positive">Combined Potential</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">65%</div>
+          <div class="metric-label">Target Capture Rate</div>
+          <div class="metric-change positive">Conservative Estimate</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <h3 class="chart-title">Self-Serve Pricing Tiers</h3>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+              <tr style="background: var(--bg-raised);">
+                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border);">Tier</th>
+                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border);">Monthly Price</th>
+                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border);">Contracts/Month</th>
+                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border);">Target Market</th>
+                <th style="padding: 16px; text-align: left; border-bottom: 1px solid var(--border);">ARR Potential</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-weight: 600;">Starter</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); color: var(--accent);">$299</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle);">5 contracts</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle);">Small teams, indie developers</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); color: var(--accent);">$180K</td>
+              </tr>
+              <tr>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-weight: 600;">Professional</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); color: var(--accent);">$899</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle);">25 contracts</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle);">Growing protocols, DeFi projects</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); color: var(--accent);">$540K</td>
+              </tr>
+              <tr>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-weight: 600;">Enterprise</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); color: var(--accent);">$2,499</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle);">Unlimited</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle);">Large protocols, enterprise</td>
+                <td style="padding: 16px; border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); color: var(--accent);">$840K</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="section" id="timeline">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Implementation</div>
+        <h2 class="section-title">90-Day Execution Timeline</h2>
+        <p class="section-subtitle">Aggressive but achievable timeline to implement P0 features and capture revenue opportunities.</p>
+      </div>
+
+      <div class="timeline-container">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-period">30 Days (March 2026)</div>
+            <h3>Foundation & P0 Feature Development</h3>
+            <div class="milestone-grid">
+              <div class="milestone">
+                <div class="milestone-title">Interactive Pricing Calculator</div>
+                <div class="milestone-desc">Algorithm development, UI/UX design, initial testing</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Self-Serve Demo MVP</div>
+                <div class="milestone-desc">Sandbox environment, contract upload flow, basic scanning</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Analytics Dashboard Framework</div>
+                <div class="milestone-desc">Data architecture, core metrics, visualization engine</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Market Research</div>
+                <div class="milestone-desc">Pricing validation, customer interviews, competitive analysis</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-period">60 Days (April 2026)</div>
+            <h3>Feature Completion & Launch Preparation</h3>
+            <div class="milestone-grid">
+              <div class="milestone">
+                <div class="milestone-title">Complete P0 Features</div>
+                <div class="milestone-desc">Full feature implementation, testing, bug fixes</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Self-Serve Onboarding</div>
+                <div class="milestone-desc">Account creation, payment processing, user onboarding</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Beta Program Launch</div>
+                <div class="milestone-desc">Limited beta with 20-30 selected customers</div>
+              </div>
+              <div class="milestone">
+                <div name="milestone-title">Sales Enablement</div>
+                <div class="milestone-desc">Updated materials, pricing sheets, demo scripts</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-period">90 Days (May 2026)</div>
+            <h3>Full Launch & Revenue Capture</h3>
+            <div class="milestone-grid">
+              <div class="milestone">
+                <div class="milestone-title">Public Self-Serve Launch</div>
+                <div class="milestone-desc">Full market launch, marketing campaign, PR outreach</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Exchange Partnerships</div>
+                <div class="milestone-desc">Target 2-3 new exchange partnerships</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Revenue Optimization</div>
+                <div class="milestone-desc">Pricing optimization, conversion tracking, funnel improvements</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-title">Scale Operations</div>
+                <div class="milestone-desc">Customer success, support processes, growth metrics</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Matrix -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Investment Analysis</div>
+        <h2 class="section-title">ROI & Risk Assessment</h2>
+        <p class="section-subtitle">Conservative estimates show 300%+ ROI within 12 months with manageable implementation risk.</p>
+      </div>
+
+      <div class="chart-container">
+        <h3 class="chart-title">ROI Matrix: Feature Impact vs. Implementation Effort</h3>
+        <canvas id="roiMatrix" width="800" height="500"></canvas>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-number">$400K</div>
+          <div class="metric-label">Estimated Development Cost</div>
+          <div class="metric-change neutral">3-Month Investment</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">$1.2M+</div>
+          <div class="metric-label">Year 1 Revenue Potential</div>
+          <div class="metric-change positive">Conservative Estimate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">300%</div>
+          <div class="metric-label">Expected ROI</div>
+          <div class="metric-change positive">12-Month Horizon</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">Low</div>
+          <div class="metric-label">Implementation Risk</div>
+          <div class="metric-change positive">Proven Technology</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 style="font-size: 32px; margin-bottom: 16px;">Time-Critical Decision Point</h2>
+      <p style="font-size: 18px; margin-bottom: 32px; opacity: 0.9;">Paul Hsu's ultimatum expires Sunday 12:00 PM. Implementation must begin immediately to capture Q2 revenue opportunities.</p>
+      <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+        <a href="mailto:board@testmachine.ai?subject=Product%20Strategy%20Approval" class="btn btn--primary" style="padding: 16px 32px; font-size: 18px;">Approve Strategy</a>
+        <a href="#timeline" class="btn btn--secondary" style="padding: 16px 32px; font-size: 18px;">Review Timeline</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Chart.js configuration for dark theme
+    Chart.defaults.color = '#a1a1aa';
+    Chart.defaults.borderColor = 'oklch(0.32 0.005 260)';
+    Chart.defaults.backgroundColor = 'oklch(0.21 0.005 260)';
+
+    // Pipeline Funnel Chart
+    const pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
+    new Chart(pipelineCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Prospecting', 'Outreach', 'Engaged', 'Qualified', 'Proposal', 'Closed'],
+        datasets: [{
+          label: 'Prospects',
+          data: [1000, 130, 80, 40, 20, 10],
+          backgroundColor: [
+            'oklch(0.5 0.2 0 / 0.8)',    // Red for high numbers
+            'oklch(0.65 0.15 30 / 0.8)',  // Orange
+            'oklch(0.70 0.15 60 / 0.8)',  // Yellow  
+            'oklch(0.65 0.12 120 / 0.8)', // Light green
+            'oklch(0.60 0.12 150 / 0.8)', // Green
+            'oklch(0.72 0.12 192 / 0.8)'  // Accent teal
+          ],
+          borderColor: [
+            'oklch(0.5 0.2 0)',
+            'oklch(0.65 0.15 30)',
+            'oklch(0.70 0.15 60)',
+            'oklch(0.65 0.12 120)',
+            'oklch(0.60 0.12 150)',
+            'oklch(0.72 0.12 192)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'oklch(0.25 0.005 260)'
+            }
+          },
+          x: {
+            grid: {
+              color: 'oklch(0.25 0.005 260)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              afterLabel: function(context) {
+                const percentage = ((context.parsed.y / 1000) * 100).toFixed(1);
+                return `${percentage}% of total prospects`;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Revenue Growth Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+      type: 'line',
+      data: {
+        labels: ['Current', 'Month 3', 'Month 6', 'Month 9', 'Month 12'],
+        datasets: [
+          {
+            label: 'Current Revenue',
+            data: [720, 720, 720, 720, 720],
+            borderColor: 'oklch(0.65 0 0)',
+            backgroundColor: 'oklch(0.65 0 0 / 0.1)',
+            borderDash: [5, 5]
+          },
+          {
+            label: 'Self-Serve Revenue',
+            data: [0, 180, 450, 850, 1200],
+            borderColor: 'oklch(0.72 0.12 192)',
+            backgroundColor: 'oklch(0.72 0.12 192 / 0.1)',
+            fill: '+1'
+          },
+          {
+            label: 'Exchange Revenue',
+            data: [720, 790, 920, 1150, 1600],
+            borderColor: 'oklch(0.60 0.12 150)',
+            backgroundColor: 'oklch(0.60 0.12 150 / 0.1)',
+            fill: 'origin'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          intersect: false,
+          mode: 'index'
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 2500,
+            grid: {
+              color: 'oklch(0.25 0.005 260)'
+            },
+            ticks: {
+              callback: function(value) {
+                return '$' + value + 'K';
+              }
+            }
+          },
+          x: {
+            grid: {
+              color: 'oklch(0.25 0.005 260)'
+            }
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': $' + context.parsed.y + 'K ARR';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // ROI Matrix Scatter Plot
+    const roiCtx = document.getElementById('roiMatrix').getContext('2d');
+    new Chart(roiCtx, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'P0 Features',
+          data: [
+            { x: 7, y: 9, label: 'Pricing Calculator' },
+            { x: 6, y: 8, label: 'Self-Serve Demo' },
+            { x: 5, y: 7, label: 'Analytics Dashboard' }
+          ],
+          backgroundColor: 'oklch(0.72 0.12 192)',
+          borderColor: 'oklch(0.72 0.12 192)',
+          pointRadius: 12,
+          pointHoverRadius: 15
+        }, {
+          label: 'Future Features',
+          data: [
+            { x: 4, y: 5, label: 'API Access' },
+            { x: 3, y: 6, label: 'White Label' },
+            { x: 8, y: 4, label: 'Mobile App' }
+          ],
+          backgroundColor: 'oklch(0.65 0 0 / 0.5)',
+          borderColor: 'oklch(0.65 0 0)',
+          pointRadius: 8,
+          pointHoverRadius: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Implementation Effort (1-10)'
+            },
+            min: 0,
+            max: 10,
+            grid: {
+              color: 'oklch(0.25 0.005 260)'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Revenue Impact (1-10)'
+            },
+            min: 0,
+            max: 10,
+            grid: {
+              color: 'oklch(0.25 0.005 260)'
+            }
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              title: function(context) {
+                return context[0].raw.label || '';
+              },
+              label: function(context) {
+                return `Impact: ${context.parsed.y}/10, Effort: ${context.parsed.x}/10`;
+              }
+            }
+          },
+          legend: {
+            display: true
+          }
+        }
+      }
+    });
+
+    // Add annotation for high-impact, low-effort quadrant
+    const roiCanvas = document.getElementById('roiMatrix');
+    const roiRect = roiCanvas.getBoundingClientRect();
+    
+    // Add smooth scrolling for navigation
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add urgency countdown
+    function updateUrgencyIndicator() {
+      const deadline = new Date('2026-03-09 12:00:00 EST');
+      const now = new Date();
+      const timeDiff = deadline - now;
+      
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      const indicator = document.querySelector('.urgency-indicator');
+      if (timeDiff > 0) {
+        indicator.textContent = `DEADLINE: ${days}d ${hours}h ${minutes}m`;
+      } else {
+        indicator.textContent = 'DEADLINE PASSED';
+        indicator.style.background = '#dc2626';
+      }
+    }
+    
+    updateUrgencyIndicator();
+    setInterval(updateUrgencyIndicator, 60000); // Update every minute
+  </script>
+
+</body>
+</html>

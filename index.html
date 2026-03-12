@@ -1,0 +1,2621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product &amp; Growth Initiatives — TestMachine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet">
+<style>
+/* ---------- Custom Properties ---------- */
+:root {
+  --bg:            oklch(0.18 0.005 260);
+  --bg-raised:     oklch(0.21 0.005 260);
+  --bg-deeper:     oklch(0.14 0.005 260);
+  --fg:            oklch(0.92 0 0);
+  --fg-muted:      oklch(0.65 0 0);
+  --fg-dim:        oklch(0.45 0 0);
+  --border:        oklch(0.32 0.005 260);
+  --border-subtle: oklch(0.25 0.005 260);
+  --accent:        oklch(0.72 0.12 192);
+  --accent-hover:  oklch(0.80 0.12 192);
+  --accent-glow:   oklch(0.72 0.12 192 / 0.1);
+  --card-bg:       oklch(0.21 0.005 260);
+  --input-bg:      oklch(0.15 0.005 260);
+  --nav-bg:        oklch(0.18 0.005 260 / 0.85);
+
+  --font-display: 'Manrope', sans-serif;
+  --font-mono:    'JetBrains Mono', 'IBM Plex Mono', monospace;
+  --font:         var(--font-mono);
+  --font-serif:   'Source Serif 4', Charter, Georgia, serif;
+
+  --nav-h:       72px;
+  --max-w:       1120px;
+  --section-py:  clamp(80px, 10vw, 140px);
+  --gap:         24px;
+  --transition:  0.25s ease;
+
+  --callout-orange: oklch(0.75 0.15 55);
+  --callout-red:    oklch(0.65 0.2 25);
+  --callout-green:  oklch(0.65 0.15 140);
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font); font-size: 17px; line-height: 1.7; color: var(--fg); background: var(--bg); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
+body.menu-open { overflow: hidden; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; color: inherit; }
+ul { list-style: none; }
+input, textarea, select { font-family: inherit; font-size: inherit; }
+
+/* ---------- Layout ---------- */
+.container { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 clamp(20px, 4vw, 40px); }
+
+/* ---------- Progress Bar ---------- */
+.progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--accent), oklch(0.72 0.10 230)); z-index: 1100; width: 0%; transition: width 0.1s; }
+
+/* ---------- Navigation ---------- */
+.nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 1000; background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-subtle); }
+.toc { position: fixed; top: var(--nav-h); left: 0; width: 320px; height: calc(100vh - var(--nav-h)); background: var(--bg-raised); border-right: 1px solid var(--border-subtle); padding: 24px 1.2rem 2rem; overflow-y: auto; z-index: 160; transition: transform 0.3s ease; }
+.toc h3 { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--fg-muted); margin-bottom: 1rem; }
+.toc a { display: block; color: var(--fg-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem; padding: 0.4rem 0.6rem; border-radius: 0; margin-bottom: 2px; transition: all 0.15s; border-left: 2px solid transparent; line-height: 1.4; word-wrap: break-word; }
+.toc a:hover, .toc a.active { color: var(--accent); background: var(--accent-glow); border-left-color: var(--accent); }
+.toc a.sub { padding-left: 1.4rem; font-size: 0.75rem; }
+.toc a.sub:hover { background: transparent; border-left-color: transparent; text-decoration: underline; }
+
+/* TOC Expandable Functionality */
+.toc-section { position: relative; cursor: pointer; display: flex; align-items: flex-start; padding: 0.4rem 0.6rem; line-height: 1.4; }
+.toc-section-text { flex: 1; word-wrap: break-word; line-height: 1.4; padding-top: 0; }
+.toc-section .toc-chevron { flex-shrink: 0; }
+.toc-chevron { font-size: 0.6rem; color: var(--fg-dim); transition: transform 0.25s ease, color 0.15s; margin-left: 8px; user-select: none; cursor: pointer; }
+.toc-section:hover .toc-chevron { color: var(--accent); }
+.toc-section.collapsed .toc-chevron { transform: rotate(-90deg); }
+.toc-subsections { list-style: none; overflow: hidden; transition: max-height 0.3s ease-out, opacity 0.3s ease-out; max-height: 500px; opacity: 1; }
+.toc-subsections.collapsed { max-height: 0; opacity: 0; padding: 0; }
+
+.nav-container { display: flex; align-items: center; justify-content: space-between; height: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 clamp(20px, 4vw, 40px); }
+.nav-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.nav-logo-text { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-link { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500; color: var(--fg-muted); transition: color var(--transition); position: relative; }
+.nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width var(--transition); }
+.nav-link:hover, .nav-link.nav-link--active { color: var(--fg); }
+.nav-link:hover::after, .nav-link.nav-link--active::after { width: 100%; }
+.nav-link.nav-link--active { color: var(--accent); }
+
+/* ---------- Buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-mono); font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.02em; padding: 14px 32px; border-radius: 0; transition: all var(--transition); white-space: nowrap; }
+.btn:hover { transform: scale(1.02); }
+.btn:active { transform: scale(0.98); }
+.btn--primary { background: var(--accent); color: #ffffff !important; border: 1px solid var(--accent); font-weight: 700; }
+.btn--primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn--nav { padding: 10px 22px; font-size: 0.75rem; }
+
+/* ---------- Hamburger ---------- */
+.hamburger { display: none; width: 40px; height: 40px; flex-direction: column; align-items: center; justify-content: center; gap: 5px; z-index: 1001; }
+.hamburger span { display: block; width: 20px; height: 1.5px; background: var(--fg); transition: all var(--transition); transform-origin: center; }
+.hamburger.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ---------- Mobile Menu ---------- */
+.mobile-menu { position: fixed; inset: 0; z-index: 999; background: var(--bg); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+.mobile-menu.active { opacity: 1; visibility: visible; }
+.mobile-menu-inner { text-align: center; }
+.mobile-menu-link { display: block; font-family: var(--font-display); font-size: clamp(1.5rem, 5vw, 2.25rem); font-weight: 600; color: var(--fg-muted); padding: 14px 0; transition: color var(--transition); }
+.mobile-menu-link:hover { color: var(--fg); }
+.mobile-menu-link.nav-link--active { color: var(--accent); }
+.mobile-menu-cta { margin-top: 40px; padding: 0 40px; }
+
+/* ---------- TOC Sidebar ---------- */
+.toc-toggle { display: none; position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200; width: 48px; height: 48px; border-radius: 0; background: var(--accent); color: oklch(0.12 0 0); border: none; font-size: 1.2rem; font-family: var(--font-mono); font-weight: 700; cursor: pointer; box-shadow: 0 4px 20px oklch(0.72 0.12 192 / 0.3); }
+.toc-overlay { display: none; position: fixed; inset: 0; background: oklch(0 0 0 / 0.6); z-index: 109; }
+.toc-overlay.open { display: block; }
+
+/* ---------- Main Content ---------- */
+.main { margin-left: 320px; min-height: 100vh; }
+.main-container { max-width: 900px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 40px) 4rem; }
+
+/* ---------- Article Header ---------- */
+.article-header { padding-top: calc(var(--nav-h) + 32px); padding-bottom: 2rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 3rem; }
+.back-link { display: inline-block; font-family: var(--font-mono); font-size: 0.8125rem; color: var(--fg-muted); margin-bottom: 1.5rem; transition: color var(--transition); }
+.back-link:hover { color: var(--accent); }
+.article-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-muted); padding: 3px 10px; border: 1px solid var(--border); border-radius: 0; margin-bottom: 1rem; }
+.article-date { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-dim); margin-bottom: 1rem; }
+.article-title { font-family: var(--font-display); font-size: clamp(1.875rem, 4vw, 2.75rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; color: var(--fg); margin-bottom: 1rem; }
+.article-subtitle { font-family: var(--font-serif); font-size: 1.125rem; color: var(--fg-muted); line-height: 1.6; }
+
+/* ---------- Hero Stats ---------- */
+.hero-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+.hero-stat { border: 1px solid var(--border-subtle); border-radius: 0; padding: 1.2rem; text-align: center; transition: border-color var(--transition), transform var(--transition); }
+.hero-stat:hover { border-color: var(--border); transform: translateY(-2px); }
+.hero-stat .value { font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 0.3rem; }
+.hero-stat .label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.hero-stat.critical .value { color: var(--callout-red); }
+.hero-stat.warning .value { color: var(--callout-orange); }
+.hero-stat.positive .value { color: var(--callout-green); }
+
+/* ---------- Article Body ---------- */
+.article-body { font-family: var(--font-serif); }
+.article-body .section { 
+  margin: 4rem 0; 
+  padding: 0; 
+}
+.article-body .section:first-child {
+  margin-top: 0;
+}
+.article-body p { 
+  font-family: var(--font-serif); 
+  font-size: 1.1875rem; 
+  line-height: 1.8; 
+  color: var(--fg-muted); 
+  margin-bottom: 1.5em; 
+}
+.article-body h2 { 
+  font-family: var(--font-display); 
+  font-size: clamp(1.375rem, 2vw, 1.625rem); 
+  font-weight: 700; 
+  color: var(--fg); 
+  margin-top: 4rem; 
+  margin-bottom: 1.5rem; 
+  line-height: 1.25; 
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+.article-body h2:first-child {
+  margin-top: 0;
+}
+.article-body h3 { 
+  font-family: var(--font-display); 
+  font-size: 1.25rem; 
+  font-weight: 700; 
+  color: var(--fg); 
+  margin-top: 3rem; 
+  margin-bottom: 1rem; 
+  line-height: 1.3; 
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+.article-body h4 { 
+  font-family: var(--font-display); 
+  font-size: 1.125rem; 
+  font-weight: 700; 
+  color: var(--fg); 
+  margin-top: 2rem; 
+  margin-bottom: 0.75rem; 
+  line-height: 1.4;
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+.article-body h5 {
+  font-family: var(--font-display); 
+  font-size: 1rem; 
+  font-weight: 700; 
+  color: var(--fg); 
+  margin-top: 1.5rem; 
+  margin-bottom: 0.5rem; 
+  line-height: 1.4;
+}
+.article-body strong { color: var(--fg); font-weight: 600; }
+.article-body ul, .article-body ol { 
+  margin-bottom: 1.75em; 
+  padding-left: 1.5em; 
+}
+.article-body ul { list-style: disc; }
+.article-body ol { list-style: decimal; }
+.article-body li { 
+  font-family: var(--font-serif); 
+  font-size: 1.1875rem; 
+  line-height: 1.8; 
+  color: var(--fg-muted); 
+  margin-bottom: 0.5rem; 
+}
+.article-body a { 
+  color: var(--accent); 
+  text-decoration: underline; 
+  text-underline-offset: 2px; 
+  transition: color var(--transition); 
+}
+.article-body a:hover { 
+  color: var(--accent-hover); 
+}
+
+/* ---------- Callout / Highlight Boxes ---------- */
+.highlight { 
+  background: var(--bg-raised); 
+  border: 1px solid var(--border-subtle); 
+  border-radius: 0; 
+  border-left: 3px solid var(--accent); 
+  padding: 1.75rem; 
+  margin: 3rem 0; 
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.05);
+}
+.highlight strong:first-child { 
+  display: block; 
+  font-family: var(--font-mono); 
+  font-size: 0.6875rem; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: 0.1em; 
+  color: var(--accent); 
+  margin-bottom: 0.75rem; 
+}
+.highlight p {
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+.highlight.warning { border-left-color: var(--callout-orange); }
+.highlight.warning strong:first-child { color: var(--callout-orange); }
+.highlight.danger { border-left-color: var(--callout-red); }
+.highlight.danger strong:first-child { color: var(--callout-red); }
+.highlight.success { border-left-color: var(--callout-green); }
+.highlight.success strong:first-child { color: var(--callout-green); }
+
+/* Standardize all card-like components */
+.card, .info-card, .feature-card {
+  background: var(--bg-raised);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent);
+  border-radius: 0;
+  padding: 1.75rem;
+  margin: 1.5rem 0;
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.05);
+}
+
+/* ---------- Code ---------- */
+code { background: var(--bg-deeper); padding: 0.15rem 0.4rem; border-radius: 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); }
+pre { background: var(--bg-deeper); border: 1px solid var(--border); border-radius: 0; padding: 1.2rem; overflow-x: auto; margin: 1.5rem 0; }
+pre code { background: none; padding: 0; color: var(--fg); }
+
+/* ---------- Tables ---------- */
+.table-container { 
+  overflow-x: auto; 
+  margin: 3rem 0; 
+  border: 1px solid var(--border); 
+  border-radius: 0; 
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.05);
+}
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-variant-numeric: tabular-nums;
+}
+th { 
+  background: var(--bg-deeper); 
+  font-family: var(--font-mono); 
+  font-size: 0.75rem; 
+  font-weight: 600; 
+  text-transform: uppercase; 
+  letter-spacing: 0.06em; 
+  color: var(--accent); 
+  padding: 1rem 1.25rem; 
+  text-align: left; 
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td { 
+  padding: 1rem 1.25rem; 
+  border-top: 1px solid var(--border-subtle); 
+  font-family: var(--font-serif); 
+  font-size: 0.9375rem; 
+  color: var(--fg-muted); 
+  line-height: 1.5;
+  vertical-align: top;
+}
+/* Fix sprint table text wrapping - keep sprint numbers on single line */
+td:first-child {
+  white-space: nowrap;
+  min-width: 100px;
+}
+tbody tr:hover td { 
+  background: var(--accent-glow); 
+  transition: background-color 0.15s ease;
+}
+.strategy-table .critical { color: var(--callout-red); font-weight: 600; }
+.strategy-table .warning { color: var(--callout-orange); font-weight: 600; }
+.strategy-table .success { color: var(--callout-green); font-weight: 600; }
+.strategy-table .muted { color: var(--fg-dim); }
+
+/* Table responsive improvements */
+@media (max-width: 768px) {
+  .table-container {
+    margin: 2rem -1rem;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+  th, td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  th {
+    font-size: 0.7rem;
+  }
+}
+
+/* ---------- Action Items ---------- */
+.action-items { 
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 1.5rem; 
+  margin: 3rem 0; 
+}
+.action-item { 
+  background: var(--bg-raised); 
+  border: 1px solid var(--border-subtle); 
+  border-left: 3px solid var(--accent); 
+  border-radius: 0;
+  padding: 1.75rem; 
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.05);
+}
+.action-item.high { border-left-color: var(--callout-orange); }
+.action-item.critical-priority { border-left-color: var(--callout-red); }
+.action-item h4 { 
+  font-family: var(--font-display); 
+  font-size: 1rem; 
+  font-weight: 700; 
+  color: var(--fg); 
+  margin-bottom: 0.75rem; 
+  line-height: 1.3;
+}
+.action-item p { 
+  font-family: var(--font-serif); 
+  font-size: 0.95rem; 
+  line-height: 1.7; 
+  color: var(--fg-muted); 
+  margin: 0; 
+}
+.action-item .meta { 
+  font-family: var(--font-mono); 
+  font-size: 0.7rem; 
+  color: var(--fg-dim); 
+  margin-top: 0.75rem; 
+}
+
+/* ---------- Footer ---------- */
+.footer { padding: 20px 0; background: var(--bg-raised); border-top: 1px solid var(--border-subtle); margin-left: 320px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 28px; }
+.footer-brand .nav-logo { margin-bottom: 14px; }
+.footer-address { font-size: 0.8125rem; color: var(--fg-dim); line-height: 1.5; }
+.footer-heading { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--fg); margin-bottom: 16px; }
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a { font-size: 0.8125rem; color: var(--fg-muted); transition: color var(--transition); }
+.footer-links a:hover { color: var(--fg); }
+.footer-bottom { display: flex; align-items: center; justify-content: center; }
+.footer-bottom p { font-size: 0.7rem; color: var(--fg-dim); margin: 0; line-height: 1; }
+
+/* ---------- Focus & Selection ---------- */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+::selection { background: oklch(0.72 0.12 192 / 0.25); }
+
+/* ---------- Responsive: Tablet (1024px) ---------- */
+@media (max-width: 1024px) {
+  .toc { transform: translateX(-100%); }
+  .main, .main-content, .main-container, .article-wrapper, .content-wrapper { margin-left: 0 !important; padding-left: 1rem !important; padding-right: 1rem !important; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .toc.open { transform: translateX(0); }
+  .toc-toggle { display: block; }
+  .main { margin-left: 0; }
+  .footer { margin-left: 0; }
+}
+
+/* ---------- Responsive: Mobile (768px) ---------- */
+@media (max-width: 768px) {
+  .main-container { padding: 0 1rem 3rem; }
+  .article-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+  .hero-stats { grid-template-columns: 1fr; }
+  .article-header { padding-top: calc(var(--nav-h) + 20px); }
+  .action-items { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-bottom { flex-direction: column; gap: 16px; align-items: flex-start; }
+  .hamburger { width: 44px; height: 44px; }
+  
+  /* Improve mobile text readability */
+  .article-body p {
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+  .article-body h2 {
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+  }
+  .article-body h3 {
+    margin-top: 2.5rem;
+    margin-bottom: 0.875rem;
+  }
+  .article-body h4 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Card grid improvements */
+  div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  /* Highlight boxes mobile spacing */
+  .highlight, .card {
+    margin: 2rem 0;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+
+<body>
+
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="navbar">
+  <div style="display:flex;align-items:center;height:100%;padding:0 24px;">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;"><img src="assets/logo-icon-white.png" alt="" style="height:42px;width:auto;filter:brightness(0) invert(70%) sepia(40%) saturate(500%) hue-rotate(130deg) brightness(1.05);"><span style="font-family:var(--font-display);font-size:1.35rem;font-weight:700;letter-spacing:-0.02em;color:var(--accent);">TestMachine</span></a>
+  </div>
+</nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-inner">
+      <a href="/" class="mobile-menu-link nav-link--active">Research</a>
+      <div class="mobile-menu-cta"></div>
+    </div>
+  </div>
+
+  <!-- TOC Toggle (mobile) -->
+  <button class="toc-toggle" id="toc-toggle" aria-label="Toggle table of contents">&#9776;</button>
+  <div class="toc-overlay" id="toc-overlay"></div>
+
+  <!-- TOC Sidebar -->
+  <nav class="toc" id="toc">
+    <h3>Contents</h3>
+    <ul>
+      <li><a href="#executive-summary">1. Executive Summary</a></li>
+      <li>
+        <a href="#new-product-initiatives" class="toc-section" data-section="2">
+          <span class="toc-section-text">2. Product &amp; Growth Initiatives</span><span class="toc-chevron">▼</span>
+        </a>
+        <ul class="toc-subsections" id="toc-section-2">
+          <li><a href="#self-serve-platform" class="sub">2.1 Self-Serve Platform</a></li>
+          <li><a href="#exchange-expansion-initiative" class="sub">2.2 Exchange Expansion</a></li>
+          <li><a href="#interactive-demo" class="sub">2.3 Interactive Demo / Sandbox Environment</a></li>
+          <li><a href="#usage-analytics" class="sub">2.4 Usage Analytics Dashboard</a></li>
+          <li><a href="#defi-protocol-sales" class="sub">2.5 DeFi Protocol Direct Sales</a></li>
+          <li><a href="#rwa-tokenization" class="sub">2.6 RWA Tokenization Security</a></li>
+          <li><a href="#initiative-summary" class="sub">2.7 Initiative Summary</a></li>
+          <li><a href="#social-outreach" class="sub">2.8 Social Outreach & Educational Content</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#active-pipeline" class="toc-section" data-section="3">
+          <span class="toc-section-text">3. Active Pipeline</span><span class="toc-chevron">▼</span>
+        </a>
+        <ul class="toc-subsections" id="toc-section-3">
+          <li><a href="#agentic-pipeline" class="sub">3.1 Agentic Pipeline System</a></li>
+          <li><a href="#pipeline-summary" class="sub">3.2 Pipeline Summary</a></li>
+          <li><a href="#exchange-pipeline-detail" class="sub">3.3 Exchange Pipeline Detail</a></li>
+          <li><a href="#auditor-traction" class="sub">3.4 Auditor Traction</a></li>
+          <li><a href="#defi-protocol-reach" class="sub">3.5 DeFi Protocol Reach</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#exchange-expansion" class="toc-section" data-section="4">
+          <span class="toc-section-text">4. Exchange Expansion Playbook</span><span class="toc-chevron">▼</span>
+        </a>
+        <ul class="toc-subsections" id="toc-section-4">
+          <li><a href="#replication-model" class="sub">4.1 Replication Model</a></li>
+          <li><a href="#sales-acceleration" class="sub">4.2 Sales Acceleration Factors</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#implementation-roadmap" class="toc-section" data-section="5">
+          <span class="toc-section-text">5. Implementation Roadmap</span><span class="toc-chevron">▼</span>
+        </a>
+        <ul class="toc-subsections" id="toc-section-5">
+          <li><a href="#foundation-phase" class="sub">5.1 Foundation</a></li>
+          <li><a href="#launch-phase" class="sub">5.2 Launch</a></li>
+          <li><a href="#scale-phase" class="sub">5.3 Scale</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#development-velocity" class="toc-section" data-section="6">
+          <span class="toc-section-text">6. Development Velocity &amp; Product Maturity</span><span class="toc-chevron">▼</span>
+        </a>
+        <ul class="toc-subsections" id="toc-section-6">
+          <li><a href="#sprint-process" class="sub">6.1 Sprint-Based Development Process</a></li>
+          <li><a href="#velocity-analysis" class="sub">6.2 Development Velocity Analysis</a></li>
+          <li><a href="#shipped-features" class="sub">6.3 Select Shipped Features</a></li>
+          <li><a href="#pricing-readiness" class="sub">6.4 Pricing Readiness</a></li>
+          <li><a href="#product-roadmap" class="sub">6.5 Product Roadmap Pipeline</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#technology-foundation" class="toc-section" data-section="7">
+          <span class="toc-section-text">7. Technology Foundation</span><span class="toc-chevron">▼</span>
+        </a>
+        <ul class="toc-subsections" id="toc-section-7">
+          <li><a href="#testmachine-tech" class="sub">7.1 TestMachine: Token Security Analysis at Scale</a></li>
+          <li><a href="#azimuth-tech" class="sub">7.2 Azimuth (Lodestar): Adversarial Smart Contract Testing</a></li>
+          <li><a href="#competitive-differentiation" class="sub">7.3 Competitive Differentiation</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#revenue-projections" class="toc-section" data-section="8">
+          <span class="toc-section-text">8. Revenue Model &amp; Growth Requirements</span><span class="toc-chevron">▼</span>
+        </a>
+        <ul class="toc-subsections" id="toc-section-8">
+          <li><a href="#pricing-model" class="sub">8.1 Pricing Model Assumptions</a></li>
+          <li><a href="#growth-trajectory" class="sub">8.2 Revenue Growth Trajectory</a></li>
+          <li><a href="#segment-requirements" class="sub">8.3 Client Requirements by Segment</a></li>
+          <li><a href="#annual-progression" class="sub">8.4 Annual Client Acquisition Progression</a></li>
+          <li><a href="#execution-implications" class="sub">8.5 Strategic Execution Implications</a></li>
+        </ul>
+      </li>
+    </ul>
+
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="main-container">
+
+      <!-- Article Header -->
+      <header class="article-header">
+
+        <span class="article-tag">Product Strategy</span>
+        <span class="article-date">March 8, 2026</span>
+        <h1 class="article-title">Product &amp; Growth Initiatives</h1>
+        <p class="article-subtitle">
+          Six product initiatives that address TestMachine's current distribution constraints and open new market segments — self-serve platform launch, exchange expansion, interactive demos, usage analytics, DeFi protocol sales, and RWA tokenization security — leveraging the proven technology stack validated through 18 months of production deployment with Coinbase.
+        </p>
+
+        <div class="hero-stats">
+          <div class="hero-stat positive">
+            <div class="value">8M+</div>
+            <div class="label">Tokens Analyzed</div>
+          </div>
+          <div class="hero-stat positive">
+            <div class="value">Zero</div>
+            <div class="label">False Positive Rate</div>
+          </div>
+          <div class="hero-stat positive">
+            <div class="value">27</div>
+            <div class="label">Engaged / Trialing</div>
+          </div>
+          <div class="hero-stat positive">
+            <div class="value">6</div>
+            <div class="label">Active Initiatives</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Article Body -->
+      <div class="article-body">
+
+        <!-- Section 1: Executive Summary -->
+        <section class="section" id="executive-summary">
+          <h2><span style="color: var(--accent);">1 /</span> Executive Summary</h2>
+
+          <p>
+            TestMachine is executing a strategic transformation from single-customer enterprise service to a multi-segment product platform that dominates blockchain security across six complementary initiatives. The company deploys self-serve tiered pricing, exchange expansion, interactive demo environments, usage analytics dashboards, DeFi protocol direct sales, and RWA tokenization security — all powered by battle-tested technology that has secured Coinbase's token operations for 18+ months. TestMachine has completed 8 consecutive development sprints since November 2025, shipping production features daily while maintaining the zero-false-positive security standard that defines the platform.
+          </p>
+
+          <p>
+            TestMachine's technology foundation delivers measurable competitive advantages: zero false positives across 8M+ analyzed tokens, sustained 18-month production deployment with organic growth at Coinbase, and a development velocity that ships customer-requested features in days rather than quarters. The company is capturing immediate revenue by deepening relationships across proven market segments—exchanges, auditors, DeFi protocols, and L2s—where TestMachine has established strong product-market fit and active customer engagement. Future expansion into agentic security and RWA tokenization builds on this foundation of established market dominance, but current execution focuses on maximizing returns from segments where TestMachine already demonstrates clear competitive superiority.
+          </p>
+
+          <p>
+            A strategic component driving this transformation is the <strong><a href="https://pipeline.lightscalar.net" target="_blank" style="color: var(--accent); text-decoration: underline; text-underline-offset: 2px;">agentic pipeline system</a></strong> — an intelligent platform that continuously discovers opportunities, analyzes market dynamics, and executes outreach at scale. This system represents a transition toward agent-directed outreach, where security intelligence drives prospect engagement rather than traditional sales approaches. By analyzing prospects' codebases and delivering security findings, the <strong>agentic pipeline</strong> transforms sales conversations into security consultations, creating competitive advantages in market penetration and customer acquisition.
+          </p>
+
+          <p>
+            <strong>Strategic Sales Model Transition:</strong> TestMachine has reached product maturity sufficient to support systematic sales expansion. This maturity enables deployment across multiple sales channels and customer acquisition methods — representing a transition from previous conservative approaches. The multi-modal sales strategy under development encompasses direct enterprise outreach, self-serve tiered offerings, <strong>agentic pipeline</strong> automation, strategic partnerships, channel sales through audit firms, and automated prospect engagement. Current market timing is favorable: the existing technology foundation combined with observed market demand across exchanges, DeFi protocols, and institutional segments positions TestMachine to capture market share through coordinated go-to-market execution.
+          </p>
+
+          <div class="highlight">
+            <strong>Research Hypothesis:</strong>
+            TestMachine stands at a strategic inflection point, transitioning from single-customer enterprise delivery to a multi-tier product platform that serves developers, protocols, exchanges, and institutional asset managers. This transformation leverages eighteen months of production validation through the Coinbase deployment to address current distribution constraints while systematically expanding into adjacent market segments through six complementary product initiatives.
+          </div>
+
+          <p>
+            The analysis that follows examines each product initiative with implementation approach, market positioning, and phased roadmap considerations. Limitations in available market data and competitive intelligence are acknowledged throughout.
+          </p>
+        </section>
+
+        <!-- Initiative Overview -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Initiative</th><th>Description</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><strong>Self-Serve Platform</strong></td><td>Tiered pricing for Azimuth smart contract security analysis</td><td>In development</td></tr>
+              <tr><td>2</td><td><strong>Exchange Expansion</strong></td><td>Replicate the Coinbase deployment model</td><td>6 exchanges engaged</td></tr>
+              <tr><td>3</td><td><strong>RWA Tokenization Security</strong></td><td>Institutional-grade blockchain security for tokenized assets</td><td>Market positioning</td></tr>
+              <tr><td>4</td><td><strong>Interactive Demo Environment</strong></td><td>Self-service sandbox for prospect evaluation</td><td>Testing this sprint</td></tr>
+              <tr><td>5</td><td><strong>Usage Analytics Dashboard</strong></td><td>Real-time security posture and ROI visibility</td><td>In development</td></tr>
+              <tr><td>6</td><td><strong>DeFi Protocol Direct Sales</strong></td><td>Azimuth-powered adversarial smart contract testing</td><td>12 protocols engaged</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section 2: Product &amp; Growth Initiatives -->
+        <section class="section" id="new-product-initiatives">
+          <h2><span style="color: var(--accent);">2 /</span> Product &amp; Growth Initiatives</h2>
+
+          <p>
+            The following analysis examines six distinct product and distribution initiatives, each evaluated for implementation approach, target market, and timeline to impact. Of these, the RWA tokenization security opportunity (<a href="#rwa-tokenization" style="color:var(--accent)">Section 2.6</a>) addresses the largest total addressable market, projected in the trillions, with institutional buyers whose security requirements align with TestMachine's zero-false-positive capabilities.
+          </p>
+
+          <h3 id="self-serve-platform"><span style="color: var(--accent);">2.1 /</span> Self-Serve Platform</h3>
+
+          <p>
+            The most structurally significant initiative is the introduction of tiered self-serve pricing for Azimuth's security analysis capabilities — covering smart contracts, DeFi protocols, and token security. As of March 2026, all revenue is generated through enterprise-level custom engagements, requiring direct sales involvement for every transaction. This model imposes constraints on pipeline throughput and excludes the long-tail market of smaller teams and protocols that cannot justify or navigate an enterprise procurement process.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Tier</th>
+                  <th>Price</th>
+                  <th>Included</th>
+                  <th>Target Buyer</th>
+                  <th>Est. Market Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Starter</strong></td>
+                  <td>$299/mo</td>
+                  <td>5 contracts/month</td>
+                  <td>Small teams, indie devs</td>
+                  <td>~2,500 (estimate based on <a href="https://www.developerreport.com/developer-report" target="_blank" style="color:var(--accent)">Electric Capital</a> 23K monthly active open-source crypto devs; estimated 10% ±5% work on smart contracts requiring security tooling)</td>
+                </tr>
+                <tr>
+                  <td><strong>Professional</strong></td>
+                  <td>$899/mo</td>
+                  <td>25 contracts/month</td>
+                  <td>Growing protocols, DeFi projects</td>
+                  <td>~600 (estimate based on DeFiLlama tracking ~4,000 protocols; estimated 15% ±5% have active development teams with security budgets)</td>
+                </tr>
+                <tr>
+                  <td><strong>Enterprise</strong></td>
+                  <td>$2,499/mo</td>
+                  <td>Unlimited</td>
+                  <td>Large protocols, multi-chain ops</td>
+                  <td>~150 (estimate based on protocols with &gt;$100M TVL or equivalent operational scale, per <a href="https://defillama.com/" target="_blank" style="color:var(--accent)">DeFiLlama</a> data as of March 2026)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <strong>Implementation status:</strong> Actively in development. The API is already productized and operational. Current engineering work is focused on tiered billing integration, self-serve onboarding flow, and customer-facing documentation. The core infrastructure is production-ready; remaining work is in packaging the API behind metered access tiers and completing the billing pipeline.
+          </p>
+
+          <h3 id="exchange-expansion-initiative"><span style="color: var(--accent);">2.2 /</span> Exchange Expansion</h3>
+
+          <p>
+            TestMachine's deployment at Coinbase may provide a replicable model for other centralized exchanges. The integration pattern, security requirements, and value proposition appear to be understood and documented through 18+ months of production operation as of March 2026.
+          </p>
+
+          <p>
+            <strong>Implementation complexity:</strong> Assessed as low-to-medium based on current evidence. The technology demonstrates production validation. Primary effort appears to be in sales execution, compliance documentation, and integration customization per exchange. Each integration follows a 2–3 week timeline from initial engagement to production deployment.
+          </p>
+
+          <h3 id="interactive-demo"><span style="color: var(--accent);">2.3 /</span> Interactive Demo / Sandbox Environment</h3>
+
+          <p>
+            The interactive demo environment — a self-service sandbox where prospects can upload a smart contract and receive scan results in under 5 minutes — is nearing completion and will begin testing during the current sprint (Sprint 8). This compresses the evaluation phase from weeks of documentation review and reference calls to minutes of hands-on product experience, converting inbound interest into qualified pipeline at higher rates.
+          </p>
+
+          <p>
+            <strong>Conversion impact:</strong> An increase in qualified pipeline is achievable based on patterns observed in B2B security tools that introduced self-serve evaluation — research on trial conversion consistently shows that interactive demos and hands-on product experience significantly improve qualified lead generation compared to documentation-only evaluation. The primary effect is converting existing interest that currently terminates at the "contact sales" gate rather than generating new interest.
+          </p>
+
+          <p>
+            <strong>Status:</strong> Core functionality built. Remaining work is sandboxed execution environment hardening and results visualization polish. Testing begins this sprint.
+          </p>
+
+          <h3 id="usage-analytics"><span style="color: var(--accent);">2.4 /</span> Usage Analytics Dashboard</h3>
+
+          <p>
+            Real-time visibility into security posture, vulnerability trends, and ROI metrics serves a dual function: it makes value tangible for retention and expansion conversations, and it creates switching costs by embedding TestMachine data into customer workflows and reporting.
+          </p>
+
+          <p>
+            <strong>Retention impact:</strong> Usage dashboards are positively correlated with reduced churn in B2B SaaS environments. Customers who can see and report on value are less likely to cancel, and expansion conversations benefit from concrete data showing increased usage.
+          </p>
+
+          <p>
+            <strong>Implementation complexity:</strong> Low-to-medium. Leverages existing data already collected during analysis. Primary work is in frontend development and data aggregation.
+          </p>
+
+          <h3 id="defi-protocol-sales"><span style="color: var(--accent);">2.5 /</span> DeFi Protocol Direct Sales</h3>
+
+          <p>
+            Azimuth positions TestMachine to sell directly to DeFi protocols, a market segment that traditional audit firms typically address with manual code review at high cost and long turnaround. With 119 protocols in the current pipeline as of March 2026 — including 12 in active engagement and IPOR currently trialing the product — this segment represents a near-term growth opportunity.
+          </p>
+
+          <h4><span style="color: var(--accent);">2.5.1 /</span> Market Economics and Revenue Positioning</h4>
+
+          <p>
+            Understanding the economic dynamics of security spending in blockchain development projects provides crucial context for TestMachine's dual-channel strategy. Security expenditure typically represents approximately <strong>10% of total project development costs</strong>—a figure that appears consistent across both traditional protocol development and DeFi project budgets.
+          </p>
+
+          <p>
+            For a representative $100,000 development project, this translates to approximately $10,000 allocated to security measures. The distribution of this security budget follows a predictable allocation: approximately <strong>90% directed toward audit services ($9,000)</strong> and <strong>10% toward security tooling and infrastructure ($1,000)</strong>. This economic structure creates distinct but complementary revenue channels for security providers.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Budget Allocation</th>
+                  <th>Percentage</th>
+                  <th>Amount ($100K Project)</th>
+                  <th>TestMachine Positioning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Audit Services</strong></td>
+                  <td class="success">90%</td>
+                  <td>$9,000</td>
+                  <td>Partner channel revenue (auditor partnerships)</td>
+                </tr>
+                <tr>
+                  <td><strong>Security Tools</strong></td>
+                  <td class="success">10%</td>
+                  <td>$1,000</td>
+                  <td>Direct protocol sales (Azimuth licenses)</td>
+                </tr>
+                <tr style="border-top: 2px solid var(--border);">
+                  <td><strong>Total Security Budget</strong></td>
+                  <td class="success">10%</td>
+                  <td class="success">$10,000</td>
+                  <td>Dual revenue opportunity</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            This market structure suggests that TestMachine's dual-channel approach—simultaneously pursuing direct protocol sales and auditor partnerships—may be strategically aligned with natural spending patterns. Rather than competing exclusively against audit firms for the primary security budget, TestMachine can capture value from both the direct tooling budget and participate in auditor workflows where the larger security budget resides.
+          </p>
+
+          <p>
+            The economic implications are significant: while direct protocol sales address the smaller security tools budget, partnership channels enable access to the substantially larger audit services budget. A successful dual-channel implementation creates <strong>two revenue sources per project</strong>—direct tool licensing to protocols and tool licensing to audit firms serving those same protocols. This economic positioning explains why established security companies often develop both direct-to-customer and partner channel strategies.
+          </p>
+
+          <div class="highlight success">
+            <strong>Strategic Insight:</strong>
+            TestMachine's positioning as both a direct protocol tool and an auditor force-multiplier is economically rational rather than strategically scattered. The security spending allocation suggests that optimizing for both channels captures a larger share of total project security budgets than focusing exclusively on either direct sales or partner relationships.
+          </div>
+
+          <p>
+            A target of 5–10 DeFi protocol clients by end of 2026, scaling to 15–25 in 2027, is achievable given the pipeline depth. Tier-1 protocols like EigenLayer, MakerDAO, Aave, and Chainlink carry security budgets of $1–5M annually, and the Avalanche Foundation partnership is generating warm introductions across its ecosystem. Azimuth's ability to deliver verified exploit proofs — not theoretical findings — differentiates the offering from traditional auditors, enabling shorter close cycles and stronger retention.
+          </p>
+
+          <p>
+            <strong>Implementation:</strong> Azimuth is in later-stage development with active pilot deployments underway. The focus in Q2–Q3 2026 is converting current trials into reference customers and publishing security findings that establish market credibility. Each signed protocol accelerates the next — the compounding effect of reference customers in this market is significant.
+          </p>
+
+          <!-- Section 2.6: RWA Tokenization Security -->
+          <h3 id="rwa-tokenization"><span style="color: var(--accent);">2.6 /</span> RWA Tokenization Security</h3>
+
+          <div class="highlight success">
+            <strong>Market Context:</strong>
+            RWA tokenization security represents a significant long-term market opportunity for TestMachine. The convergence of traditional finance and blockchain creates new demand for institutional-grade security — and TestMachine's zero-false-positive, dynamic analysis approach aligns with regulated institutional requirements.
+          </div>
+
+          <h4><span style="color: var(--accent);">2.6.1 /</span> Market Opportunity</h4>
+
+          <p>
+            Real World Asset (RWA) tokenization — the representation of traditional financial assets (treasuries, bonds, real estate, commodities, equities) as on-chain tokens — is among the fastest-growing segments in blockchain as of March 2026. The market is transitioning from early experimentation to institutional-scale deployment, driven by major financial institutions.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Current (2024–2025)</th>
+                  <th>Projected (2030)</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Total on-chain RWA value</strong></td>
+                  <td>$26.6B (distributed)<br/>$342.6B (represented)</td>
+                  <td class="success">$3.7-16 Trillion</td>
+                  <td><a href='https://app.rwa.xyz/' target='_blank'>RWA.xyz</a>, BCG, Standard Chartered, McKinsey</td>
+                </tr>
+                <tr>
+                  <td><strong>Tokenized US Treasuries</strong></td>
+                  <td>$8.2B+</td>
+                  <td class="success">$200B-1T</td>
+                  <td><a href='https://app.rwa.xyz/' target='_blank'>RWA.xyz</a>, industry growth projections</td>
+                </tr>
+                <tr>
+                  <td><strong>Real Estate tokenization</strong></td>
+                  <td>$150M-300M</td>
+                  <td class="success">$1.4T</td>
+                  <td><a href='https://app.rwa.xyz/' target='_blank'>RWA.xyz</a>, real estate market analysis</td>
+                </tr>
+                <tr>
+                  <td><strong>Private Credit tokenization</strong></td>
+                  <td>$5.8B+</td>
+                  <td class="success">$1.2T</td>
+                  <td><a href='https://app.rwa.xyz/' target='_blank'>RWA.xyz</a>, private credit growth trends</td>
+                </tr>
+                <tr>
+                  <td><strong>Commodities tokenization</strong></td>
+                  <td>$5.4B (gold-focused)</td>
+                  <td class="success">$800B</td>
+                  <td><a href='https://app.rwa.xyz/' target='_blank'>RWA.xyz</a>, commodities market analysis</td>
+                </tr>
+                <tr>
+                  <td><strong>Annual growth rate (CAGR)</strong></td>
+                  <td class="success">50–100%+</td>
+                  <td class="success">80-120% (2025-2030)</td>
+                  <td>Industry consensus, institutional adoption trends</td>
+                </tr>
+                <tr>
+                  <td><strong>BlackRock BUIDL Fund AUM</strong></td>
+                  <td>$2.0B</td>
+                  <td class="success">$50-100B</td>
+                  <td><a href='https://app.rwa.xyz/' target='_blank'>RWA.xyz</a>, BlackRock expansion plans</td>
+                </tr>
+                <tr>
+                  <td><strong>Franklin Templeton on-chain</strong></td>
+                  <td>$1.0B</td>
+                  <td class="success">$15-25B</td>
+                  <td><a href='https://app.rwa.xyz/' target='_blank'>RWA.xyz</a>, Franklin Templeton projections</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight">
+            <strong>Research Methodology:</strong>
+            Current market data sourced from RWA.xyz real-time analytics platform (March 2026), which tracks $26.6B in distributed tokenized assets and $342.6B in represented assets across 3,000+ instruments. Projections based on institutional adoption trends, regulatory developments, and 80-120% CAGR observed in current tokenization segments. Treasury projections assume 2-5% of $40T+ US Treasury market adopts tokenization by 2030. Real estate projections based on 0.1% penetration of $15T global real estate securities market. Private credit reflects continued institutional DeFi adoption and regulatory clarity enabling pension fund participation.
+          </div>
+
+          <p>
+            Key institutional players now actively deploying on-chain include <strong>BlackRock</strong> (BUIDL tokenized treasury fund), <strong>Franklin Templeton</strong> (on-chain money market fund), <strong>JPMorgan</strong> (Onyx/Kinexys blockchain platform), and <strong>Goldman Sachs</strong> (Digital Asset Platform). These are not exploratory pilots — they are production deployments managing real assets on public and permissioned blockchains.
+          </p>
+
+          <h4><span style="color: var(--accent);">2.6.2 /</span> Why TestMachine Is Uniquely Positioned</h4>
+
+          <p>
+            Institutional players entering blockchain operate under regulatory frameworks that impose different security requirements than crypto-native protocols. Traditional audit firms — the current default for smart contract security — typically do not provide the continuous, automated, zero-false-positive analysis that regulated institutions require. Several factors create structural advantages for TestMachine:
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Advantage</th><th>Detail</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Zero False Positive Requirement</strong></td><td>Regulated institutions do not tolerate high false positive rates. A false positive triggers compliance reviews and delays asset operations. TestMachine's verified zero false positive rate across 8M+ tokens serves as a prerequisite for institutional adoption.</td></tr>
+                <tr><td><strong>RWA-Specific Risk Vectors</strong></td><td>Tokenized assets may introduce risk categories absent from standard DeFi: custody logic, redemption mechanisms, compliance gates (KYC/AML at the contract level), and oracle dependencies for NAV feeds. These may require specialized analysis beyond generic token scanning.</td></tr>
+                <tr><td><strong>Continuous Monitoring</strong></td><td>Traditional audits typically provide a snapshot. RWA tokens managing significant assets may require continuous security monitoring — the operational model TestMachine currently operates for Coinbase.</td></tr>
+                <tr><td><strong>Institutional Credibility</strong></td><td>The existing Coinbase deployment demonstrates the ability to meet institutional-grade security requirements. Coinbase is a publicly traded, regulated entity — serving as their security provider provides institutional credibility.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span style="color: var(--accent);">2.6.3 /</span> Implementation Approach</h4>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Step</th><th>Approach</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Extend Token Analysis</strong></td><td>Add RWA-specific risk detection covering custody logic, redemption mechanisms, compliance gates, and oracle dependencies for NAV feeds. Much of the dynamic analysis infrastructure exists — the work is in defining and validating RWA-specific risk heuristics.</td></tr>
+                <tr><td><strong>Compliance-Grade Reporting</strong></td><td>Institutional buyers require audit-trail documentation meeting regulatory standards. Reports structured for compliance teams — risk severity classifications, remediation guidance, and continuous monitoring attestations.</td></tr>
+                <tr><td><strong>Leverage Coinbase Relationship</strong></td><td>Use the existing engagement for warm introductions to institutional token issuers. Coinbase's expansion into institutional services (Coinbase Prime, Base chain) creates connection points to asset managers and tokenization platforms.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight warning">
+            <strong>Timeline Consideration:</strong>
+            The RWA security market is forming as of March 2026. Institutional players are making vendor selections for security infrastructure as they deploy tokenized assets at scale. Early positioning in this segment is valuable — once an institution integrates a security provider into their compliance workflow, switching costs are high. The window to establish TestMachine as a leading institutional provider is 2026–2028.
+          </div>
+
+          <h3 id="initiative-summary"><span style="color: var(--accent);">2.7 /</span> Initiative Summary</h3>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Initiative</th>
+                  <th>Description</th>
+                  <th>Timeline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Self-Serve Platform</strong></td>
+                  <td>Tiered API access to Azimuth security analysis (Starter / Professional / Enterprise)</td>
+                  <td>Q2–Q3 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>Exchange Expansion</strong></td>
+                  <td>Replicate Coinbase deployment model to additional centralized exchanges</td>
+                  <td>Q2–Q4 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>Interactive Demo</strong></td>
+                  <td>Self-service sandbox for prospect evaluation — upload a contract, get results in minutes</td>
+                  <td>Q2 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>Analytics Dashboard</strong></td>
+                  <td>Real-time security posture, vulnerability trends, and usage metrics for customers</td>
+                  <td>In development</td>
+                </tr>
+                <tr>
+                  <td><strong>DeFi Protocol Sales</strong></td>
+                  <td>Azimuth-powered adversarial testing sold directly to DeFi protocols</td>
+                  <td>Q3–Q4 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>RWA Tokenization Security</strong></td>
+                  <td>Institutional-grade continuous security for tokenized real-world assets</td>
+                  <td>Q3–Q4 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>Social Outreach & Educational Content</strong></td>
+                  <td>Video-first content strategy showcasing RL demos and technical expertise for community engagement</td>
+                  <td>Q2–Q3 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 2.8: Social Outreach & Educational Content -->
+          <h3 id="social-outreach"><span style="color: var(--accent);">2.8 /</span> Social Outreach & Educational Content</h3>
+
+          <p>
+            Social media and educational content represent a strategic channel for demonstrating TestMachine's technical depth while building awareness in the blockchain security community. This initiative leverages video-first content distribution to communicate complex security concepts, showcase real-world capabilities, and position TestMachine as a thought leader in adversarial testing methodologies.
+          </p>
+
+          <div class="highlight success">
+            <strong>Strategic Positioning:</strong>
+            Rather than traditional marketing approaches, TestMachine's social outreach strategy centers on educational value and technical demonstration. By sharing security research, vulnerability discoveries, and behind-the-scenes development processes, the company builds credibility through expertise demonstration rather than promotional messaging. This approach aligns with developer and security professional expectations in the blockchain space, where technical authority drives purchase decisions.
+          </div>
+
+          <h4><span style="color: var(--accent);">2.8.1 /</span> Video-First Strategy for Complex Technical Concepts</h4>
+
+          <p>
+            The centerpiece of TestMachine's educational content strategy is sophisticated technical demonstrations that showcase the platform's unique capabilities through live execution. These videos serve multiple purposes: they function as sales tools for prospects evaluating TestMachine's technology, educational resources for the broader security community, and credibility builders that demonstrate real capabilities rather than theoretical promises.
+          </p>
+
+          <div style="margin: 3rem 0; text-align: center;">
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);">
+              <iframe src="https://testmachine.lightscalar.net" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 12px;" title="TestMachine RL Demo - Live Reinforcement Learning Agent Attack Demonstration"></iframe>
+            </div>
+            <p style="text-align: center; font-size: 0.875rem; color: var(--fg-muted); font-style: italic; line-height: 1.6; margin-top: 1rem;">
+              <strong>Live RL Demo:</strong> Interactive demonstration of reinforcement learning agents attacking smart contracts on forked mainnet environments. This showcases TestMachine's core differentiator—verified exploits, not theoretical vulnerabilities. <a href="https://testmachine.lightscalar.net" target="_blank" style="color: var(--accent);">View live demo →</a>
+            </p>
+          </div>
+
+          <p>
+            The RL demo showcases TestMachine's sophisticated approach to adversarial testing by visualizing how reinforcement learning agents explore contract state spaces, discover vulnerabilities, and generate verified exploit proofs. Unlike traditional static analysis tools that report potential issues, this demonstration shows agents actually exploiting contracts on forked blockchain environments—proving each vulnerability through execution rather than inference.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 3rem 0;">
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1rem;">Real-Time Attack Visualization</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">The demo shows RL agents exploring thousands of call sequences against live contract forks, discovering critical vulnerabilities through dynamic execution rather than pattern matching. Prospects can watch the actual attack unfold, seeing exactly how TestMachine identifies and exploits security flaws.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1rem;">Zero False Positive Evidence</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Each finding demonstrated in the video represents a verified exploit—the agents either successfully drain funds or they don't report a vulnerability. This visual proof of TestMachine's zero false positive rate differentiates the platform from traditional security tools that generate hundreds of unverified alerts.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1rem;">Technical Sophistication Display</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">The complexity visible in the RL agent behavior—multi-step attack chains, state space exploration, economic incentive modeling—communicates TestMachine's technical depth to prospects who understand the difficulty of automated adversarial testing.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1rem;">Proof-of-Concept Generation</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Beyond identifying vulnerabilities, the demo shows TestMachine generating complete proof-of-concept exploits with transaction sequences that can be executed against the vulnerable contracts. This transforms security findings from theoretical alerts into actionable intelligence.</p>
+            </div>
+          </div>
+
+          <h4><span style="color: var(--accent);">2.8.2 /</span> Educational Content Approach for Blockchain Security</h4>
+
+          <p>
+            TestMachine's content strategy prioritizes educational value over promotional messaging, reflecting the technical sophistication of the target audience. Security engineers, smart contract developers, and DeFi protocol teams evaluate tools based on technical capabilities rather than marketing claims. By publishing authoritative content about vulnerability research, attack methodologies, and security best practices, TestMachine positions itself as a knowledge leader while demonstrating real expertise.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th style="width: 25%;">Content Type</th><th style="width: 45%;">Strategic Value</th><th style="width: 30%;">Target Audience</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Vulnerability Deep-Dives</strong></td>
+                  <td>Detailed analysis of real exploits with technical breakdowns and prevention strategies. Demonstrates TestMachine's analytical depth while educating the community.</td>
+                  <td>Security engineers, smart contract auditors</td>
+                </tr>
+                <tr>
+                  <td><strong>Attack Methodology Videos</strong></td>
+                  <td>Educational content explaining how different attack vectors work, using TestMachine's findings as case studies. Builds authority while showcasing capabilities.</td>
+                  <td>DeFi developers, protocol teams</td>
+                </tr>
+                <tr>
+                  <td><strong>Behind-the-Scenes Development</strong></td>
+                  <td>Technical content showing RL agent development, training processes, and infrastructure scaling. Appeals to technical teams interested in the innovation behind the product.</td>
+                  <td>AI researchers, blockchain developers</td>
+                </tr>
+                <tr>
+                  <td><strong>Security Research Reports</strong></td>
+                  <td>Authoritative analysis of market trends, threat landscapes, and emerging attack patterns. Positions TestMachine as the definitive source for blockchain security intelligence.</td>
+                  <td>Industry analysts, institutional buyers</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span style="color: var(--accent);">2.8.3 /</span> Platform-Specific Content Optimization</h4>
+
+          <p>
+            This multi-platform content strategy positions TestMachine as both an accessible educational resource and a sophisticated technical solution. Each platform serves different audience segments and content consumption patterns, requiring tailored approaches that leverage platform-specific features while maintaining consistent technical authority.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 3rem 0;">
+            <div class="card" style="border-left-color: #1DA1F2;">
+              <h5 style="color: #1DA1F2; margin-bottom: 0.75rem; font-size: 1rem;">Twitter/X Strategy</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin-bottom: 1rem;">Real-time vulnerability discoveries, quick technical insights, and links to detailed analysis. Thread format for complex security explanations. Engagement with security researchers and protocol teams for thought leadership positioning.</p>
+              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-dim);">Target: 5-10 posts/week</div>
+            </div>
+            <div class="card" style="border-left-color: #0A66C2;">
+              <h5 style="color: #0A66C2; margin-bottom: 0.75rem; font-size: 1rem;">LinkedIn Strategy</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin-bottom: 1rem;">Professional security insights, industry analysis, and institutional-focused content. Target security leaders, CTOs, and compliance teams at exchanges and protocols. Long-form posts with business impact analysis.</p>
+              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-dim);">Target: 2-3 posts/week</div>
+            </div>
+            <div class="card" style="border-left-color: #FF0000;">
+              <h5 style="color: #FF0000; margin-bottom: 0.75rem; font-size: 1rem;">YouTube Strategy</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin-bottom: 1rem;">Long-form technical demonstrations, educational series on smart contract security, live analysis of recent exploits, and behind-the-scenes development content. SEO-optimized for security-related search terms.</p>
+              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-dim);">Target: 1-2 videos/week</div>
+            </div>
+          </div>
+
+          <h4><span style="color: var(--accent);">2.8.4 /</span> Content Distribution Strategy & Community Engagement</h4>
+
+          <p>
+            Content distribution focuses on building genuine expertise recognition rather than promotional reach. Success metrics emphasize engagement quality over vanity metrics—technical discussions, collaboration requests from other security researchers, and inbound inquiries from prospects who discovered TestMachine through educational content rather than direct sales outreach.
+          </p>
+
+          <div class="highlight">
+            <strong>Community Integration:</strong>
+            TestMachine's content strategy integrates with existing blockchain security communities rather than attempting to build a separate audience. This includes participating in security researcher discussions, contributing to vulnerability disclosure processes, and sharing insights in developer forums where the target audience already congregates. The goal is establishing TestMachine as a valuable community member and knowledge contributor, which builds trust and authority more effectively than isolated promotional content.
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th style="width: 30%;">Distribution Channel</th><th style="width: 40%;">Strategic Approach</th><th style="width: 30%;">Success Metrics</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Developer Communities</strong></td>
+                  <td>Active participation in security forums, Discord servers, and GitHub discussions. Share insights and analysis without promotional messaging.</td>
+                  <td>Technical discussions initiated, collaboration requests received</td>
+                </tr>
+                <tr>
+                  <td><strong>Industry Events</strong></td>
+                  <td>Conference presentations, webinar participation, and panel discussions focused on technical content and security research findings.</td>
+                  <td>Speaking opportunities, inbound prospects from events</td>
+                </tr>
+                <tr>
+                  <td><strong>Security Research Publications</strong></td>
+                  <td>Peer-reviewed research, vulnerability disclosures, and technical whitepapers that advance the field while demonstrating TestMachine's capabilities.</td>
+                  <td>Citations, research collaborations, institutional recognition</td>
+                </tr>
+                <tr>
+                  <td><strong>Cross-Platform Syndication</strong></td>
+                  <td>Adapt content for multiple platforms while maintaining technical depth. Use platform-specific features to enhance educational value.</td>
+                  <td>Organic reach growth, cross-platform engagement</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            The strategic outcome of this social outreach initiative is positioning TestMachine as the authoritative voice in adversarial smart contract testing while generating qualified inbound interest from prospects who understand the technical sophistication required for effective blockchain security. Unlike traditional marketing funnels, this approach builds trust through demonstrated expertise, creating sales conversations that begin with "we saw your research on X vulnerability" rather than "we got your cold email."
+          </p>
+        </section>
+
+        <!-- Section 3: Active Pipeline -->
+        <section class="section" id="active-pipeline">
+          <h2><span style="color: var(--accent);">3 /</span> Active Pipeline</h2>
+
+          <p>
+            The product initiatives outlined above are supported by an active, structured pipeline spanning several market segments. As of March 2026, TestMachine is engaged with organizations across exchanges, security auditors, and DeFi protocols — with 27 in active engagement or trialing stages. This pipeline reflects completed demonstrations, active product trials, and ongoing technical discussions.
+          </p>
+
+          <p>
+            The strategic approach emphasizes deepening relationships within existing customer segments rather than expanding into untested markets. While new opportunities—such as RWA tokenization and institutional asset management—show promise, execution focuses on market segments where strong traction and product-market fit signals have been observed. This approach ensures sustainable growth while positioning TestMachine to capitalize on emerging opportunities as they mature.
+          </p>
+
+          <h3 id="agentic-pipeline"><span style="color: var(--accent);">3.1 /</span> Agentic Pipeline System</h3>
+          
+          <p>
+            Beyond traditional pipeline management, TestMachine operates an <strong>agentic pipeline system</strong> that continuously discovers and analyzes opportunities. This system monitors aspects of the crypto security landscape, identifying new opportunities and gathering intelligence on prospects.
+          </p>
+
+          <div class="highlight success" style="background: var(--bg-raised); border-left-color: var(--accent); border-left-width: 4px;">
+            <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 0;">
+              <div style="flex: 1;">
+                <strong style="font-family: var(--font-mono); font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: block; margin-bottom: 8px;">Experience the Agentic Pipeline Live</strong>
+                <span style="color: var(--fg-muted); font-family: var(--font-serif); font-size: 1rem; line-height: 1.5;">Interact with our intelligent pipeline system that grows and learns autonomously.</span>
+              </div>
+              <div style="flex-shrink: 0;">
+                <a href="https://pipeline.lightscalar.net" target="_blank" class="btn btn--primary" style="white-space: nowrap; box-shadow: 0 4px 20px oklch(0.72 0.12 192 / 0.2);">
+                  View Live Pipeline →
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin: 32px 0;">
+            <div style="text-align: center; margin-bottom: 16px;">
+              <img src="assets/pipeline-screenshot.png" alt="Live view of the agentic pipeline system showing 78+ prospects with intelligent categorization and contact discovery" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);">
+            </div>
+            <p style="text-align: center; font-size: 14px; color: var(--fg-muted); font-style: italic;">
+              Real-time view of the <strong>agentic pipeline system</strong> managing 545+ prospects across exchanges, protocols, and auditors with automated intelligence gathering
+            </p>
+          </div>
+
+          <h4><span style="color: var(--accent);">3.1.1 /</span> Autonomous Intelligence Capabilities</h4>
+          
+          <p>
+            The system operates as a continuously learning intelligence engine, discovering and analyzing the crypto security ecosystem without human oversight. Key autonomous capabilities include:
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 24px 0;">
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+              <h5 style="color: var(--accent); margin-bottom: 8px;">GitHub Repository Discovery</h5>
+              <p style="font-size: 14px; line-height: 1.5;">Automatically identifies and catalogs new crypto projects, protocols, and security tooling repositories across GitHub, building a comprehensive map of the ecosystem.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+              <h5 style="color: var(--accent); margin-bottom: 8px;">Audit History Analysis</h5>
+              <p style="font-size: 14px; line-height: 1.5;">Discovers and analyzes previous security audits, vulnerability disclosures, and security incidents to understand risk patterns and audit firm relationships.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+              <h5 style="color: var(--accent); margin-bottom: 8px;">Contact Intelligence</h5>
+              <p style="font-size: 14px; line-height: 1.5;">Automatically maps organizational structures, identifies key decision-makers, and tracks contact information across exchanges, protocols, and security teams.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+              <h5 style="color: var(--accent); margin-bottom: 8px;">Security Incident Monitoring</h5>
+              <p style="font-size: 14px; line-height: 1.5;">Continuously monitors for security breaches, exploits, and vulnerabilities across the DeFi ecosystem, identifying organizations that may need enhanced security tooling.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+              <h5 style="color: var(--accent); margin-bottom: 8px;">Social Intelligence</h5>
+              <p style="font-size: 14px; line-height: 1.5;">Tracks social media discussions, development activity, and community sentiment to identify market opportunities and understand project momentum.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+              <h5 style="color: var(--accent); margin-bottom: 8px;">Pain Point Detection</h5>
+              <p style="font-size: 14px; line-height: 1.5;">Analyzes public discussions, GitHub issues, and community forums to identify security pain points and unmet needs across different market segments.</p>
+            </div>
+          </div>
+
+          <h4><span style="color: var(--accent);">3.1.2 /</span> Superior Outreach Through Security Intelligence</h4>
+          
+          <p>
+            The <strong>agentic pipeline's</strong> most powerful capability is its ability to <strong>transform generic sales outreach into compelling security intelligence delivery</strong>. Rather than sending templated cold emails, the system enables TestMachine to approach prospects with immediate, actionable value based on actual security analysis of their code.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin: 24px 0;">
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 24px;">
+              <h5 style="color: var(--accent); margin-bottom: 12px; font-size: 1.1rem;">Right People, Right Time</h5>
+              <p style="font-size: 15px; line-height: 1.6; color: var(--fg-muted);">The system automatically identifies and maps decision makers across security teams, engineering leadership, and C-level executives. Rather than guessing at org charts, we know exactly who owns security decisions and when they're most likely to engage based on recent incidents, funding rounds, or audit cycles.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 24px;">
+              <h5 style="color: var(--accent); margin-bottom: 12px; font-size: 1.1rem;">Codebase Intelligence</h5>
+              <p style="font-size: 15px; line-height: 1.6; color: var(--fg-muted);">Before reaching out to any prospect, our system runs their smart contracts and tokens through TestMachine and Azimuth analysis. We approach every conversation already knowing their security posture, potential vulnerabilities, and specific risk vectors. This isn't theoretical—it's based on actual dynamic analysis of their deployed code.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 24px;">
+              <h5 style="color: var(--accent); margin-bottom: 12px; font-size: 1.1rem;">Value-First Outreach</h5>
+              <p style="font-size: 15px; line-height: 1.6; color: var(--fg-muted);">Our outreach emails don't start with sales pitches—they start with security findings. "We analyzed your contracts and found three specific vulnerabilities" gets responses. "We have a security tool you might like" gets ignored. The system generates personalized outreach highlighting actual security flaws discovered through automated analysis.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1.1rem;">Security-Driven Credibility</h5>
+              <p style="font-size: 15px; line-height: 1.7; color: var(--fg-muted); margin: 0;">Instead of generic claims about our capabilities, we lead every conversation with concrete security intelligence about their specific situation. This immediately demonstrates our technical depth and creates urgency around actual risks rather than hypothetical benefits. Prospects respond because we're solving real problems they didn't know they had.</p>
+            </div>
+          </div>
+
+          <div class="highlight success">
+            <strong>Competitive Advantage:</strong>
+            This intelligence-driven outreach approach differs significantly from typical security sales. While competitors send generic pitches about their tools, TestMachine delivers immediate value by identifying specific security risks in prospects' codebases. This transforms the sales conversation from "do you need security tools?" to "here are the specific vulnerabilities we found in your contracts—let's discuss remediation." This approach generates higher response rates, shorter sales cycles, and stronger initial credibility.
+          </div>
+
+          <div class="highlight success">
+            <strong>System Development:</strong>
+            The <strong>agentic pipeline</strong> has expanded from manually managed prospects to 545+ categorized opportunities across all segments as of March 2026. The system continues discovering new targets and gathering competitive intelligence that informs both product development and sales strategy.
+          </div>
+
+          <h4><span style="color: var(--accent);">3.1.3 /</span> Automated Action List Generation</h4>
+          
+          <p>
+            The most powerful demonstration of the <strong>agentic pipeline's</strong> intelligence is its ability to <strong>automatically generate prioritized, actionable tasks</strong> from prospect research. Rather than simply collecting data, the system synthesizes company intelligence, security posture analysis, and contact mapping into specific, executable outreach actions with priority rankings and tactical guidance.
+          </p>
+
+          <p>
+            This automated action generation transforms prospect research from a manual, time-intensive process into an intelligent system that not only identifies opportunities but tells TestMachine exactly what to do about them. The system automatically identifies key decision-makers, analyzes their backgrounds and priorities, assesses company security needs based on codebase analysis, and generates specific outreach actions with contextual intelligence about timing, approach, and value proposition.
+          </p>
+
+          <div style="margin: 3rem 0;">
+            <div style="text-align: center; margin-bottom: 1rem;">
+              <img src="assets/action-list-screenshot.jpg" alt="Automated action generation showing Puffer Finance example with intelligent contact prioritization and outreach recommendations" style="max-width: 100%; height: auto; border-radius: 0; box-shadow: 0 8px 32px oklch(0 0 0 / 0.15);">
+            </div>
+            <p style="text-align: center; font-size: 0.875rem; color: var(--fg-muted); font-style: italic; line-height: 1.6; margin: 0;">
+              Automated action generation in practice: The system identifies Jason Vranek at Puffer Finance (Co-Founder & CTO) as a P1 priority contact based on intelligent analysis of company security needs, recent funding activity, and decision-maker mapping
+            </p>
+          </div>
+
+          <h4><span style="color: var(--accent);">3.1.4 /</span> Intelligent Action Prioritization</h4>
+          
+          <p>
+            The system doesn't just generate random tasks—it applies sophisticated prioritization algorithms that consider multiple factors simultaneously: company security posture, recent funding events, audit history, technical complexity, decision-maker accessibility, and market timing. This produces a ranked action list where P1 actions represent the highest-probability conversion opportunities with specific tactical guidance.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 3rem 0;">
+            <div class="card">
+              <h6 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 600;">Context-Aware Contact Identification</h6>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Automatically maps organizational structures to identify the specific individuals who own security decisions, with background research on their technical interests and recent public statements about security priorities.</p>
+            </div>
+            <div class="card">
+              <h6 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 600;">Security-Driven Action Intelligence</h6>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Each generated action includes specific security findings from codebase analysis, enabling outreach that leads with concrete value rather than generic sales messaging.</p>
+            </div>
+            <div class="card">
+              <h6 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 600;">Automated Timing Intelligence</h6>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Considers recent security incidents, funding announcements, audit schedules, and technical milestones to recommend optimal outreach timing for maximum receptivity.</p>
+            </div>
+            <div class="card">
+              <h6 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 600;">Integration of Historical Context</h6>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Incorporates previous audit relationships, known security pain points, and past vulnerability disclosures to craft outreach that demonstrates deep understanding of their specific security journey.</p>
+            </div>
+          </div>
+
+          <div class="highlight success">
+            <strong>Operational Impact:</strong>
+            This automated action generation capability transforms TestMachine's sales efficiency by eliminating manual prospect research and prioritization. Instead of spending hours researching each prospect to craft personalized outreach, the system automatically generates ready-to-execute action items with all necessary context, contact information, and value propositions pre-populated. This allows the sales team to focus on execution and relationship building rather than research and planning.
+          </div>
+
+          <h3 id="pipeline-summary"><span style="color: var(--accent);">3.2 /</span> Pipeline Summary</h3>
+
+          <p>
+            As of March 2026, the <strong>agentic pipeline system</strong> manages 545+ categorized prospects across four primary market segments, with detailed contact intelligence and security analysis for each organization. This represents significant scale expansion from earlier manual prospect management, with 760 individual contacts mapped across the ecosystem.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Segment</th>
+                  <th>Total Pipeline</th>
+                  <th>Engaged / Trialing</th>
+                  <th>Engagement Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Exchanges</strong></td>
+                  <td>78</td>
+                  <td class="success">6 engaged</td>
+                  <td>7.7%</td>
+                </tr>
+                <tr>
+                  <td><strong>Security Auditors</strong></td>
+                  <td>130</td>
+                  <td class="success">10 engaged/trialing</td>
+                  <td>7.7%</td>
+                </tr>
+                <tr>
+                  <td><strong>DeFi Protocols</strong></td>
+                  <td>308</td>
+                  <td class="success">11 engaged/trialing</td>
+                  <td>3.6%</td>
+                </tr>
+                <tr>
+                  <td><strong>RWA/Tokenization</strong></td>
+                  <td>29</td>
+                  <td class="muted">0 engaged</td>
+                  <td>0%</td>
+                </tr>
+                <tr style="border-top: 2px solid var(--border);">
+                  <td><strong>Total</strong></td>
+                  <td class="success"><strong>545</strong></td>
+                  <td class="success"><strong>27 active</strong></td>
+                  <td class="success"><strong>4.9%</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span style="color: var(--accent);">3.2.1 /</span> Engagement Quality Metrics</h4>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Segment</th>
+                  <th>Engaged / Trialing</th>
+                  <th>Est. Close Timeline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Exchanges</strong></td>
+                  <td class="success">6 engaged</td>
+                  <td>3–9 months</td>
+                </tr>
+                <tr>
+                  <td><strong>Security Auditors</strong></td>
+                  <td class="success">10 engaged/trialing</td>
+                  <td>2 weeks – 3 months</td>
+                </tr>
+                <tr>
+                  <td><strong>DeFi Protocols</strong></td>
+                  <td class="success">11 engaged/trialing</td>
+                  <td>1–6 months</td>
+                </tr>
+                <tr style="border-top: 2px solid var(--border);">
+                  <td><strong>Total</strong></td>
+                  <td class="success"><strong>27 active</strong></td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="exchange-pipeline-detail"><span style="color: var(--accent);">3.3 /</span> Exchange Pipeline Detail</h3>
+
+          <p>
+            Six centralized exchanges are actively engaged, spanning demo completions, security team evaluations, and integration discussions. Each has received a product demonstration or direct technical engagement.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Exchange</th>
+                  <th>Stage</th>
+                  <th>Timeline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Kraken</strong></td>
+                  <td class="success">Demo held (Feb 2026); security team evaluating</td>
+                  <td>Q2–Q3 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>Binance</strong></td>
+                  <td class="warning">Demoed Nov 2025; CTO received app access</td>
+                  <td>Q2–Q4 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>Bitget</strong></td>
+                  <td class="warning">Demoed Dec 2025; indicated late Q1/Q2 timeline</td>
+                  <td>Q1–Q2 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>OKX</strong></td>
+                  <td>Integrated DEX into CEX; evaluating security tooling</td>
+                  <td>Q2–Q3 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>KuCoin</strong></td>
+                  <td>Warm introduction; passing technical details</td>
+                  <td>Q2–Q4 2026</td>
+                </tr>
+                <tr>
+                  <td><strong>Purps DEX</strong></td>
+                  <td>Engaged on multi-chain security needs</td>
+                  <td>Q2–Q3 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            An additional 9 exchanges are in active outreach — including Crypto.com, Blockchain.com, MEXC, Bybit, Bullish, LBank, BEQUANT, EDX Markets, and BitMEX — with 52 more in prospecting stages including Fidelity, Gemini, Gate.io, Revolut, and leading DEXs.
+          </p>
+
+          <h3 id="auditor-traction"><span style="color: var(--accent);">3.4 /</span> Auditor Traction</h3>
+
+          <p>
+            The security auditor segment provides a strong near-term product-market fit signal. Six firms are actively trialing TestMachine's tools in their audit workflows — a milestone reached through product demonstrations, not promotional pricing or incentives. These auditors chose to integrate TestMachine into live engagements because the technology delivers measurable value.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Firm</th>
+                  <th>Stage</th>
+                  <th>Audit Volume</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Cyberscope</strong></td>
+                  <td class="success">Trialing</td>
+                  <td>15–30 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>Pessimistic Security</strong></td>
+                  <td class="success">Trialing</td>
+                  <td>6–10 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>3DOC</strong></td>
+                  <td class="success">Trialing</td>
+                  <td>4–8 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>Ustas</strong></td>
+                  <td class="success">Trialing</td>
+                  <td>3–6 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>Trust Security</strong></td>
+                  <td class="success">Trialing</td>
+                  <td>4–7 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>Guardian</strong></td>
+                  <td class="success">Trialing</td>
+                  <td>3–5 audits/month</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            Beyond the 6 trialing firms, 10 additional auditors are engaged (including Paladin Security, Shieldify, Dedaub, ABDK Consulting, and 0xMacro), with 2 more at the demo stage. Total outreach has covered 64+ firms out of 98 identified targets.
+          </p>
+
+          <div class="highlight">
+            <strong>Observation:</strong>
+            Six independent audit firms chose to trial TestMachine after seeing demonstrations. These trials were initiated after product demonstrations without promotional pricing. The willingness of auditors to integrate an external tool into revenue-generating workflows suggests the technology addresses a real need in their process.
+          </div>
+
+          <h4><span style="color: var(--accent);">3.4.1 /</span> Audit Volume Research & Market Analysis</h4>
+
+          <p>
+            The audit volume estimates above are based on comprehensive research conducted across the auditor firms mentioned in this section. Research methodology included analysis of public audit portfolios, historical engagement patterns, team size indicators, customer counts, and market positioning relative to competitors. Where specific volume data was available (Cyberscope: 2,700+ total audits completed, 3,000+ customers; Pessimistic Security: 400+ audits since 2017), estimates align with observed data. For firms with limited public data, estimates reflect typical capacity for mid-tier security firms based on team size and market positioning.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Additional Engaged Firms</th>
+                  <th>Market Position</th>
+                  <th>Est. Audit Volume</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ABDK Consulting</strong></td>
+                  <td>Premium clients (Uniswap, Aave, 1inch, StarkWare), 7+ years, 120-150+ audits</td>
+                  <td>2–4 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>Shieldify</strong></td>
+                  <td>Major DeFi clients (Lido, IPOR, Revert Finance), extensive portfolio</td>
+                  <td>4–8 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>0xMacro</strong></td>
+                  <td>Elite boutique team, quality over scale, premium positioning</td>
+                  <td>2–4 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>Dedaub</strong></td>
+                  <td>Advanced security platform, decompilation tools, tooling + auditing</td>
+                  <td>3–6 audits/month</td>
+                </tr>
+                <tr>
+                  <td><strong>Paladin Security</strong></td>
+                  <td>Research inconclusive, estimated mid-tier operation</td>
+                  <td>5–10 audits/month</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight success">
+            <strong>Market Opportunity Analysis:</strong>
+            Combined audit volume across current trialing and engaged firms represents significant addressable capacity. The 6 trialing firms collectively represent an estimated 50-80 audits/month in capacity, while the 10 additional engaged firms add another 20-40 audits/month. Total addressable market through current TestMachine relationships: approximately 70-120 audits/month. At average audit values of $15K-50K per engagement, this pipeline represents substantial annual revenue potential of $12-72M through auditor channel partnerships alone.
+          </div>
+
+          <p>
+            <strong>Strategic positioning within audit workflows:</strong> TestMachine's integration into auditor workflows addresses a structural efficiency challenge in manual code review. While traditional audits require 2-6 weeks for completion, TestMachine's analysis runs in minutes, enabling auditors to identify critical issues early in the engagement and focus manual review on complex business logic rather than common vulnerability patterns. This positioning creates value for auditors through increased throughput and improved finding quality, explaining the voluntary adoption observed across trialing firms.
+          </p>
+
+          <h3 id="defi-protocol-reach"><span style="color: var(--accent);">3.5 /</span> DeFi Protocol Reach</h3>
+
+          <p>
+            The DeFi protocol pipeline spans 308 organizations, with 11 in engaged or trialing stages. The Avalanche Foundation has established an active partnership, providing introductions across its ecosystem. IPOR, a DeFi protocol, is actively trialing TestMachine's tools — running contracts through the system and comparing results against competing AI-powered security tools.
+          </p>
+
+          <div class="highlight success">
+            <strong>Pipeline Status:</strong>
+            As of March 2026: 27 organizations in active engagement or trialing across three segments, 6 exchanges past the demo stage (based on internal CRM data as of March 8, 2026). These figures represent current engagement status and may fluctuate based on prospect decision-making cycles.
+          </div>
+        </section>
+
+        <!-- Section 4: Exchange Expansion Playbook -->
+        <section class="section" id="exchange-expansion">
+          <h2><span style="color: var(--accent);">4 /</span> Exchange Expansion Playbook</h2>
+
+          <p>
+            The Coinbase deployment provides a documented, replicable model for additional exchange engagements. The playbook below codifies the integration pattern, sales process, and timeline established through the Coinbase relationship — now supported by a pipeline of exchange targets with 6 in active engagement.
+          </p>
+
+          <h3 id="replication-model"><span style="color: var(--accent);">4.1 /</span> Replication Model</h3>
+          <p>
+            Based on the Coinbase integration experience, each exchange integration may follow a sequence including: security requirements assessment and technical scoping (estimated 3–5 days), API integration and configuration (estimated 3–5 days), pilot deployment on test environment with validation (estimated 3–5 days), and production rollout with monitoring (estimated 2–3 days). Estimated total time from initial engagement to production: approximately 2–3 weeks. TestMachine's architecture was designed for multi-tenant deployment — the Coinbase integration established reusable connector patterns, token ingestion pipelines, and alerting frameworks that new exchanges may inherit, potentially reducing integration effort to days of configuration rather than weeks of custom work.
+          </p>
+
+          <p>
+            The current exchange pipeline is detailed in <a href="#active-pipeline" style="color:var(--accent)">Section 3</a>. Six exchanges are in active engagement, with 9 in active outreach and 52 in prospecting stages.
+          </p>
+
+          <h3 id="sales-acceleration"><span style="color: var(--accent);">4.2 /</span> Sales Acceleration Factors</h3>
+          <p>
+            Several factors suggest that exchange expansion sales cycles could compress relative to the initial Coinbase engagement:
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Factor</th><th>Impact</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Reference Customer</strong></td><td>Coinbase may serve as a Tier 1 reference, potentially reducing evaluation risk for subsequent exchanges</td></tr>
+                <tr><td><strong>Production Track Record</strong></td><td>18+ months of continuous operation with zero false positives provides quantitative evidence as of March 2026</td></tr>
+                <tr><td><strong>Regulatory Environment</strong></td><td>Increasing regulatory scrutiny of token listing processes may create compliance-driven demand</td></tr>
+                <tr><td><strong>Interactive Demo</strong></td><td>Sandbox environment may enable prospect validation before procurement, potentially compressing evaluation from weeks to days</td></tr>
+                <tr><td><strong>Pipeline Depth</strong></td><td>Multiple exchange targets with 15 in engaged or active outreach may absorb individual deal delays</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight">
+            <strong>Note:</strong>
+            The Coinbase relationship functions as both a revenue source and a sales accelerator. Each month of continued operation adds to the body of evidence (tokens analyzed, false positive rate, uptime) that makes subsequent sales conversations more efficient. With 6 exchanges now past the demo stage — including Kraken's security team actively evaluating and Binance's CTO with app access — the pipeline has transitioned from prospecting to active evaluation across multiple prospects simultaneously.
+          </div>
+        </section>
+
+        <!-- Section 5: Implementation Roadmap -->
+        <section class="section" id="implementation-roadmap">
+          <h2><span style="color: var(--accent);">5 /</span> Implementation Roadmap</h2>
+
+          <p>
+            The following roadmap sequences initiatives by impact and dependency, front-loading the highest-leverage items while maintaining parallel progress on longer-term initiatives. This sequencing reflects a deliberate strategy to establish commercial readiness first, capture immediate revenue from proven market segments second, and expand into adjacent opportunities third.
+          </p>
+
+          <div class="highlight">
+            <strong>Roadmap Methodology:</strong>
+            The roadmap phases are structured around three strategic principles: (1) Foundation activities establish the infrastructure required for sustainable sales execution, (2) Launch activities convert existing pipeline into revenue while building systematic customer acquisition, and (3) Scale activities diversify revenue sources and expand market presence. Each phase builds on previous accomplishments while maintaining parallel progress across multiple initiatives to accelerate overall momentum.
+          </div>
+
+          <h3 id="foundation-phase"><span style="color: var(--accent);">5.1 /</span> Foundation Phase: Commercial Infrastructure</h3>
+
+          <p>
+            The Foundation Phase establishes the core infrastructure and go-to-market readiness required for systematic revenue generation. These initiatives represent the minimum viable commercial foundation—without them, sales efforts would remain ad hoc rather than systematic and scalable.
+          </p>
+
+          <p>
+            <strong>Why these specific initiatives matter:</strong> Each Foundation initiative removes a structural constraint that currently limits TestMachine's sales velocity. Azimuth Benchmarking provides the quantitative proof required for prospect evaluation. Pricing and Sales Playbook eliminates quoting delays and inconsistency. Self-Serve Billing Integration addresses the long-tail market that cannot navigate enterprise procurement. Interactive Demo compresses evaluation cycles from weeks to minutes. Ad Campaigns create systematic inbound pipeline rather than relying on referrals and outbound only. Exchange Pipeline Advancement converts current momentum into revenue.
+          </p>
+
+          <p>
+            <strong>Current status context:</strong> Much of this phase is already complete or actively in progress as of Sprint 8 (March 9–20, 2026), reflecting TestMachine's focus on transitioning from single-customer enterprise service to systematic commercial platform. The table below documents current progress and remaining work.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th style="width:25%;">Initiative</th><th style="width:50%;">Description &amp; Business Impact</th><th style="width:25%;">Current Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Azimuth Benchmarking</strong></td><td>Establish quantitative quality benchmarks for experiment generation and hypothesis filtering. This provides the evidence base required for prospect evaluation—prospects need to understand Azimuth's effectiveness relative to existing tools before committing to trials or purchases.</td><td><span style="color:var(--callout-green);font-weight:600;">Complete (Sprint 7)</span></td></tr>
+                <tr><td><strong>Azimuth Pricing &amp; Sales Playbook</strong></td><td>Complete commercial framework including tier pricing, usage limits, overage model, and sales quoting guide. Eliminates quote delays and ensures consistent pricing across prospects, enabling faster deal velocity and preventing pricing inconsistencies that could damage market positioning.</td><td><span style="color:var(--callout-green);font-weight:600;">Complete</span></td></tr>
+                <tr><td><strong>Self-Serve Billing Integration</strong></td><td>Transform the existing productized API into a self-serve platform with billing integration and automated onboarding. Addresses the long-tail market segment that requires security tools but cannot navigate enterprise procurement processes—potentially expanding addressable market by 10x.</td><td><span style="color:var(--callout-orange);font-weight:600;">In development</span></td></tr>
+                <tr><td><strong>Interactive Demo / Sandbox</strong></td><td>Self-service evaluation environment where prospects upload contracts and receive scan results in under 5 minutes. Compresses evaluation cycles from weeks of documentation review to minutes of hands-on experience—critical for converting inbound interest before prospects lose momentum.</td><td><span style="color:var(--callout-orange);font-weight:600;">Sprint 8 (testing active)</span></td></tr>
+                <tr><td><strong>Ad Campaigns</strong></td><td>Systematic paid marketing campaigns for both Token Custody and Azimuth, including ad copy, target audience definition, and conversion tracking infrastructure. Creates predictable inbound pipeline rather than relying exclusively on referrals and cold outbound efforts.</td><td><span style="color:var(--callout-orange);font-weight:600;">Sprint 8 (launching)</span></td></tr>
+                <tr><td><strong>Exchange Pipeline Advancement</strong></td><td>Convert current exchange momentum into signed agreements, specifically advancing Kraken to technical scoping while maintaining engagement with Binance, Bitget, and OKX post-demo. Represents the highest-probability revenue opportunities with established relationships and proven demand.</td><td><span style="color:var(--callout-orange);font-weight:600;">Ongoing</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <strong>Success metrics for Foundation Phase:</strong> Commercial readiness will be measured by (1) self-serve platform accepting payments and onboarding customers automatically, (2) interactive demo generating qualified leads with <5-minute evaluation cycles, (3) ad campaigns producing cost-effective inbound pipeline, and (4) at least one exchange advancing from demo to technical scoping or signed agreement. These metrics indicate that TestMachine has transitioned from custom enterprise service to systematic commercial platform.
+          </p>
+
+          <h3 id="launch-phase"><span style="color: var(--accent);">5.2 /</span> Launch Phase: Market Activation</h3>
+
+          <p>
+            The Launch Phase converts existing pipeline momentum into systematic revenue while building the foundation for sustainable customer acquisition. These initiatives focus on market activation rather than additional product development—leveraging work completed in Foundation to generate immediate business results.
+          </p>
+
+          <p>
+            <strong>Strategic focus:</strong> Launch activities prioritize converting existing engaged prospects into paying customers while establishing the organic discovery and customer success infrastructure required for sustained growth. Rather than building additional features, this phase optimizes the complete customer journey from discovery through onboarding to ongoing value delivery.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th style="width:25%;">Initiative</th><th style="width:50%;">Revenue Impact &amp; Strategic Rationale</th><th style="width:25%;">Key Dependencies</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Self-Serve Platform (Beta)</strong></td><td>Launch tiered self-serve access to Azimuth (Starter/Professional tiers) while maintaining sales-assisted Enterprise tier. <strong>Revenue impact:</strong> Captures the long-tail market (~3,100 potential customers based on developer population analysis) that represents 85%+ of total addressable market but cannot access enterprise-only offerings. <strong>Business rationale:</strong> Creates predictable recurring revenue with automated customer acquisition, reducing dependency on large enterprise deals.</td><td>Billing integration completion</td></tr>
+                <tr><td><strong>Usage Analytics Dashboard</strong></td><td>Customer-facing dashboards showing scan history, vulnerability trends, and security posture metrics. <strong>Retention impact:</strong> Analytics dashboards correlate with reduced churn in B2B SaaS—customers who can visualize and report on value are significantly less likely to cancel. <strong>Expansion impact:</strong> Usage visibility drives upgrade conversations by highlighting increased consumption patterns and demonstrating ROI.</td><td>Data aggregation pipeline</td></tr>
+                <tr><td><strong>Auditor Conversion</strong></td><td>Convert the 6 currently trialing auditors (Cyberscope, Pessimistic Security, 3DOC, Ustas, Trust Security, Guardian) into paid licensing agreements. <strong>Revenue certainty:</strong> These firms have already integrated TestMachine into live audit workflows—conversion represents lower-risk revenue since product-market fit has been demonstrated through voluntary adoption.</td><td>Successful trial completion</td></tr>
+                <tr><td><strong>SEO &amp; Developer Platforms</strong></td><td>Systematic organic discovery through search engine optimization, developer tool directory listings, and strategic backlink development. <strong>Long-term leverage:</strong> Organic discovery creates compound growth—each month of improved search visibility increases inbound pipeline without proportional marketing spend increases. <strong>Cost efficiency:</strong> Organic leads typically convert at 2-3x the rate of paid advertising leads.</td><td>Technical content development</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <strong>Why this sequencing matters:</strong> Launch activities are sequenced to create compounding momentum. Self-serve platform generates immediate revenue from developer adoption while providing data on customer acquisition costs and usage patterns. Analytics dashboards improve retention and expansion for both new self-serve customers and existing enterprise clients. Auditor conversion capitalizes on existing validation while creating reference customers for future auditor sales. SEO establishes sustainable organic pipeline that reduces long-term customer acquisition costs.
+          </p>
+
+          <h3 id="scale-phase"><span style="color: var(--accent);">5.3 /</span> Scale Phase: Revenue Diversification &amp; Market Expansion</h3>
+
+          <p>
+            The Scale Phase diversifies revenue sources and expands market presence once Launch Phase activities have established systematic customer acquisition and retention. These initiatives focus on optimization and market expansion rather than foundational infrastructure, building on proven traction to accelerate growth.
+          </p>
+
+          <p>
+            <strong>Optimization strategy:</strong> Scale activities are data-driven rather than speculative. Self-serve optimization analyzes actual customer behavior data to improve conversion and expansion. DeFi protocol pilots leverage existing partnerships and trial results to expand into adjacent market segments. RWA market entry builds on proven institutional relationships. Thought leadership amplifies demonstrated expertise rather than theoretical positioning.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th style="width:25%;">Initiative</th><th style="width:50%;">Market Expansion Strategy &amp; Growth Leverage</th><th style="width:25%;">Strategic Dependencies</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Self-Serve Optimization</strong></td><td>• Optimize conversion funnel and onboarding based on customer behavior data<br>• Target 10% improvement in trial-to-paid conversion<br>• Use analytics to inform pricing and product development</td><td>30+ days of self-serve customer data</td></tr>
+                <tr><td><strong>DeFi Protocol Pilots</strong></td><td>• Deploy Azimuth to 5–10 DeFi protocols<br>• Leverage Avalanche Foundation partnership and IPOR trial results<br>• Target ~600 potential customers with established security budgets<br>• Build reference customer network</td><td>Azimuth production readiness validation</td></tr>
+                <tr><td><strong>RWA Market Entry</strong></td><td>• Extend analysis for RWA-specific risk vectors<br>• Target 1–2 institutional clients through Coinbase network<br>• Address $3.7-16 trillion projected market by 2030<br>• Early positioning for vendor lock-in advantages</td><td>RWA-specific heuristics development</td></tr>
+                <tr><td><strong>Thought Leadership</strong></td><td>• Publish token security reports and vulnerability disclosures<br>• Establish TestMachine as definitive blockchain security source<br>• Generate media coverage and inbound interest<br>• Improve organic search visibility</td><td>None (leverages existing capabilities)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <strong>Success criteria and measurement:</strong> Scale Phase success will be measured through diversified revenue growth across multiple customer segments. Key performance indicators include: (1) self-serve monthly recurring revenue growth exceeding 20% month-over-month, (2) 3+ DeFi protocol deployments generating $50K+ annual recurring revenue each, (3) 1+ institutional RWA client engagement demonstrating market viability, and (4) thought leadership content driving 15%+ of total inbound pipeline. These metrics indicate successful transition from single-segment dependency to diversified market presence.
+          </p>
+
+          <div class="highlight success">
+            <strong>Roadmap Integration with Pipeline:</strong>
+            This roadmap is designed to maximize returns from TestMachine's current pipeline position—27 organizations in active engagement across exchanges, auditors, and DeFi protocols as of March 2026. Rather than pursuing speculative opportunities, each phase prioritizes initiatives that convert existing engagement into revenue while building infrastructure for sustainable expansion. The phased approach ensures that Foundation work enables Launch activities, which provide the data and relationships required for effective Scale execution.
+          </div>
+        </section>
+
+        <!-- Section 6: Development Velocity & Product Maturity -->
+        <section class="section" id="development-velocity">
+          <h2><span style="color: var(--accent);">6 /</span> Development Velocity &amp; Product Maturity</h2>
+
+          <p>
+            The initiatives described in this document are the output of a structured product development process that ships features daily within strategic sprint frameworks since November 2025. TestMachine runs two-week agile sprints — now in Sprint 8 — with defined strategic goals that guide daily feature deployment, tracked deliverables, and continuous production updates throughout each sprint. Sprint 8 demonstrates this approach: features ship daily while maintaining strategic focus on commercial readiness and ad campaign launches. This section documents the execution record.
+          </p>
+
+          <h3 id="sprint-process"><span style="color: var(--accent);">6.1 /</span> Sprint-Based Development Process</h3>
+
+          <p>
+            TestMachine operates with a development methodology that ships features <strong>daily</strong> while maintaining strategic coherence through two-week sprint planning. Beginning in November 2025, TestMachine adopted structured two-week sprints that provide strategic direction for daily feature deployment—not release gates. The team has completed 8 consecutive sprints without interruption, with features shipping to production every day within each sprint's strategic framework. The current sprint (Sprint 8) focuses on commercial readiness, with ad campaigns launching for both Token Custody and Azimuth—demonstrating how daily shipping operates within strategic sprint objectives.
+          </p>
+
+          <p>
+            <em>Note: Sprint goals represent strategic planning frameworks that guide daily feature deployment throughout each two-week period. Features ship to production daily within each sprint's strategic direction, not at sprint boundaries.</em>
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th style="white-space:nowrap;min-width:90px;">Sprint</th>
+                  <th style="white-space:nowrap;">Dates</th>
+                  <th>Strategic Goal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sprint 0</strong></td>
+                  <td>Nov 14–21, 2025</td>
+                  <td>Setup</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 1</strong></td>
+                  <td>Nov 21 – Dec 5, 2025</td>
+                  <td>Ship end-to-end slice of TestMachine experience (Coinbase blog, press release, onboarding)</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 2</strong></td>
+                  <td>Dec 6–19, 2025</td>
+                  <td>Deliver polished TestMachine experience (Fraud Farm in UI, behavior details)</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 3</strong></td>
+                  <td>Dec 22 – Jan 9, 2026</td>
+                  <td>Operationalize Azimuth, strengthen workflows, onboarding, feedback loops</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 4</strong></td>
+                  <td>Jan 12–23, 2026</td>
+                  <td>Prepare Azimuth for first live demo, advance Token Custody toward production</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 5</strong></td>
+                  <td>Jan 26 – Feb 6, 2026</td>
+                  <td>Make Azimuth launch-ready — impact/likelihood findings, Lodestar integration</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 6</strong></td>
+                  <td>Feb 9–20, 2026</td>
+                  <td>Improve Azimuth usability, observability, benchmarking; increase external visibility</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 7</strong></td>
+                  <td>Feb 23 – Mar 6, 2026</td>
+                  <td>Get Azimuth ready to sell: benchmarks, bug fixes, features for demos</td>
+                </tr>
+                <tr>
+                  <td><strong>Sprint 8</strong></td>
+                  <td>Mar 9–20, 2026</td>
+                  <td class="success">CURRENT — Get Azimuth ready to sell; ad campaigns launching for TC and AZ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="velocity-analysis"><span style="color: var(--accent);">6.2 /</span> Development Velocity Analysis: Strategic Sprints and Daily Deployment</h3>
+
+          <p>
+            TestMachine operates with a development velocity that differentiates it from competitors through <strong>daily feature shipping within strategic sprint structures</strong>. While many teams ship features quarterly or wait for sprint boundaries, TestMachine pushes production updates to customers <strong>every single day</strong> — a pace that has been sustained for four months as of March 2026. The two-week sprint methodology provides strategic planning coherence while maintaining continuous daily delivery.
+          </p>
+
+          <div class="highlight success">
+            <strong>Daily Shipping with Strategic Structure:</strong>
+            TestMachine's two-week sprints serve as strategic planning frameworks that enable coherent daily feature deployment, not shipping gates. While sprints define architectural direction and business objectives, actual features ship to production daily throughout each sprint. This approach combines the benefits of strategic planning with the competitive advantages of continuous delivery—features reach customers immediately while maintaining product coherence and technical quality.
+          </div>
+
+          <p>
+            This daily shipping cadence within strategic sprint structure enables TestMachine to respond to market demands and customer feedback with unprecedented speed while maintaining product coherence. TestMachine's sprint framework serves as a strategic planning layer that ensures daily deployments align with broader objectives rather than creating ad-hoc feature accumulation. Each two-week sprint establishes the architectural foundation for coherent daily shipping:
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin: 3rem 0;">
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Architectural Coherence</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Sprint goals define the technical architecture for the next two weeks, ensuring daily commits align toward a coherent outcome rather than chaotic feature accumulation.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Strategic Focus</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Clear sprint objectives prevent feature drift and scope creep. Every daily deployment advances toward the same strategic milestone.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Deployment Confidence</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Sprint planning includes infrastructure readiness and testing frameworks. Daily deployments are low-risk because the foundation is engineered for rapid, safe iteration.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Customer Feedback Loops</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Customers see improvements immediately, not at sprint boundaries. Feedback is incorporated into the next day's deployment, creating tight product-market fit iteration cycles.</p>
+            </div>
+          </div>
+
+          <p>
+            This represents a competitive advantage in development velocity relative to other security firms. Traditional audit firms typically operate on quarterly or annual product release cycles. Software security tools typically ship major updates every 3-6 months. TestMachine's daily shipping cadence enables customer requests, bug fixes, and feature improvements to be addressed in days rather than quarters.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Development Model</th>
+                  <th>TestMachine</th>
+                  <th>Typical Security Tools</th>
+                  <th>Audit Firms</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Production Deployment Frequency</strong></td>
+                  <td class="success" style="font-weight: 700;">Daily (within strategic sprints)</td>
+                  <td class="warning">Monthly to Quarterly</td>
+                  <td class="critical">Quarterly to Annual</td>
+                </tr>
+                <tr>
+                  <td><strong>Customer Feedback Integration</strong></td>
+                  <td class="success" style="font-weight: 700;">Same day</td>
+                  <td class="warning">Next release cycle</td>
+                  <td class="critical">Next engagement</td>
+                </tr>
+                <tr>
+                  <td><strong>Bug Fix Turnaround</strong></td>
+                  <td class="success" style="font-weight: 700;">Hours to 1-2 days</td>
+                  <td class="warning">Weeks</td>
+                  <td class="critical">N/A (manual process)</td>
+                </tr>
+                <tr>
+                  <td><strong>Feature Development</strong></td>
+                  <td class="success" style="font-weight: 700;">Incremental, continuous</td>
+                  <td class="warning">Batch releases</td>
+                  <td class="critical">Manual methodology</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight warning">
+            <strong>Market Implication:</strong>
+            This development velocity compounds advantages over time. While competitors typically plan quarterly roadmaps, TestMachine responds to market changes and customer feedback within days. In a rapidly evolving security landscape — where new attack vectors and blockchain protocols emerge continuously — teams that can adapt quickly hold structural advantages.
+          </div>
+
+          <p>
+            The sprint structure is not about artificial deadlines or release gates — it's about creating the strategic coherence that enables sustained daily shipping. Eight consecutive sprints of successful delivery, with features shipping to production <strong>every day</strong> while maintaining strategic alignment and technical quality, demonstrates that TestMachine has achieved a development process that combines the benefits of continuous delivery with the focus of strategic planning. This daily shipping cadence within structured sprint frameworks scales with market demands while ensuring coherent product evolution.
+          </p>
+
+          <h3 id="shipped-features"><span style="color: var(--accent);">6.3 /</span> Select Shipped Features</h3>
+
+          <p>
+            The following highlights key features shipped across these sprints, grouped by product area. All are production-deployed.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Category</th><th>Feature</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td rowspan="4"><strong>Azimuth</strong></td><td>App Integration</td><td>Full integration of Azimuth into the TestMachine web application</td></tr>
+                <tr><td>Benchmarking Suite</td><td>Experiment generation and hypothesis filtering benchmarks for quality measurement</td></tr>
+                <tr><td>Impact &amp; Likelihood Scoring</td><td>Findings enriched with severity impact and exploitation likelihood</td></tr>
+                <tr><td>Hardhat &amp; Scope Control</td><td>Azimuth runs on Hardhat projects with configurable scope limiting</td></tr>
+                <tr><td rowspan="3"><strong>Token Security</strong></td><td>Risk Scoring</td><td>Summary and individual token risk scores with behavioral analysis</td></tr>
+                <tr><td>Fraud Farm Detection</td><td>Identification of coordinated fraud networks, exposed via API and UI</td></tr>
+                <tr><td>Liquidity Analysis</td><td>Liquidity pool integration and network graph analysis</td></tr>
+                <tr><td rowspan="3"><strong>Platform</strong></td><td>Self-Serve Application</td><td>Full web application with onboarding, organization management, and analytics</td></tr>
+                <tr><td>API Upgrade</td><td>Productized API with usage statistics, pricing tiers, and documentation</td></tr>
+                <tr><td>Observability</td><td>Telemetry dashboards, event tracking, and production monitoring</td></tr>
+                <tr><td rowspan="2"><strong>Infrastructure</strong></td><td>ECS → EKS Migration</td><td>Full container orchestration migration to Kubernetes</td></tr>
+                <tr><td>Lodestar Production</td><td>RL worker integration and Lodestar operational for design partners</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="pricing-readiness"><span style="color: var(--accent);">6.4 /</span> Pricing Readiness</h3>
+
+          <p>
+            Azimuth pricing is fully defined and operationalized. This is not a planned task — all pricing work is complete:
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Pricing Task</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Tier pricing defined (Starter ~$10K, Professional, Enterprise)</td><td>Complete</td></tr>
+                <tr><td>Usage limits and overage pricing model</td><td>Complete</td></tr>
+                <tr><td>Internal pricing sheet</td><td>Complete</td></tr>
+                <tr><td>Pricing framework reviewed with leadership</td><td>Complete</td></tr>
+                <tr><td>Sales playbook ("How to quote Azimuth")</td><td>Complete</td></tr>
+                <tr><td>Azimuth module tiers and inclusions defined</td><td>Complete</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight success">
+            <strong>Status:</strong>
+            All pricing tasks are complete. The sales team has a playbook, tiered pricing, and a defined overage model. Azimuth is commercially ready to quote.
+          </div>
+
+          <h3 id="product-roadmap"><span style="color: var(--accent);">6.5 /</span> Product Roadmap Pipeline</h3>
+
+          <p>
+            Beyond shipped features, an active product ideas backlog reflects continued investment in platform expansion. Current items under consideration include a TestMachine MCP Server for AI-native integrations, x402 payment acceptance, a Portfolio Analyzer, network graph visualization, on-demand token coverage expansion, and a Code4Arena competition benchmarking Azimuth against competitive tools. This backlog is managed alongside the sprint process and prioritized against customer demand signals.
+          </p>
+        </section>
+
+        <!-- Section 7: Technology Foundation -->
+        <section class="section" id="technology-foundation">
+          <h2><span style="color: var(--accent);">7 /</span> Technology Foundation</h2>
+
+          <p>
+            TestMachine's competitive position rests on two core technology platforms, each addressing distinct segments of blockchain security with approaches that are architecturally different from existing methods.
+          </p>
+
+          <h3 id="testmachine-tech"><span style="color: var(--accent);">7.1 /</span> TestMachine: Token Security Analysis at Scale</h3>
+          <p>
+            TestMachine performs automated security analysis of every token listed on-chain, scanning for dangerous behaviors including token confiscation mechanisms, hidden minting functions, proxy manipulation patterns, and other adversarial contract behaviors. The system operates at scale — over <strong>8 million tokens analyzed to date</strong> — with a verified <strong>zero false positive rate</strong>.
+          </p>
+
+          <p>
+            The zero false positive rate is architecturally significant. Unlike static analysis tools that flag potential risks based on pattern matching (typically producing higher false positive rates), TestMachine's analysis is grounded in behavioral execution. When TestMachine identifies a potentially dangerous token, the identified behavior has been confirmed through dynamic analysis rather than inferred from code patterns alone.
+          </p>
+
+          <p>
+            TestMachine is currently deployed in production for Coinbase, where it serves as a critical component of their token listing security infrastructure. This deployment constitutes TestMachine's anchor customer relationship and represents the strongest evidence of product-market fit: a Tier 1 exchange with stringent security requirements has chosen TestMachine as its provider and maintained the relationship through continuous operation.
+          </p>
+
+          <div class="highlight success">
+            <strong>Observation:</strong>
+            Coinbase retention through continuous production deployment, 8M+ tokens analyzed with zero false positives, and organic contract growth constitute quantitative evidence that the product delivers measurable value. These metrics represent current operational status as of March 2026.
+          </div>
+
+          <h3 id="azimuth-tech"><span style="color: var(--accent);">7.2 /</span> Azimuth (Lodestar): Adversarial Smart Contract Testing</h3>
+          <p>
+            Azimuth represents a fundamentally different approach to smart contract security. Rather than performing static code analysis — the methodology employed by virtually every existing audit firm and automated tool — Azimuth deploys <strong>reinforcement learning agents that actively attack smart contracts on forked mainnet environments</strong>.
+          </p>
+
+          <p>
+            The distinction is consequential. Static analysis examines code patterns and infers potential vulnerabilities. Azimuth executes real transactions against a fork of the live blockchain, constructing multi-step attack chains through dynamic exploration. When Azimuth identifies a vulnerability, it provides an <strong>end-to-end exploit proof</strong>: the complete sequence of transactions required to execute the attack, demonstrated against a realistic environment. This is not a theoretical finding — it is a verified exploit.
+          </p>
+
+          <p>
+            This architecture produces the same zero false positive characteristic as TestMachine: if Azimuth reports a vulnerability, it has been actually exploited. The system does not generate speculative warnings or require manual triage. Every finding is actionable and verified.
+          </p>
+
+          <p>
+            Azimuth is positioned as TestMachine's primary growth engine for entering the DeFi protocol security market, where the combination of verified exploits and zero false positives represents a different methodology than existing audit approaches.
+          </p>
+
+          <h3 id="competitive-differentiation"><span style="color: var(--accent);">7.3 /</span> Competitive Differentiation</h3>
+
+          <p>
+            TestMachine operates in the blockchain security market alongside both traditional static analysis tools and specialized smart contract auditors. The competitive landscape includes established audit firms offering manual code review services, automated security scanning tools that perform pattern-based vulnerability detection, and emerging AI-powered analysis platforms. Each category addresses blockchain security through fundamentally different methodologies, creating distinct trade-offs in accuracy, scale, and deployment complexity.
+          </p>
+
+          <p>
+            Key differentiation factors center on TestMachine's unique approach to dynamic behavioral analysis rather than static code inspection. While competitors typically examine source code patterns and infer potential vulnerabilities, TestMachine executes actual transactions on forked blockchain environments to verify exploitable behaviors. This architectural distinction produces zero false positives across 8M+ analyzed tokens — a measurable advantage in environments where false alarms create compliance overhead and operational friction for institutional customers.
+          </p>
+
+          <p>
+            The following analysis compares TestMachine against primary competitive categories across the factors most critical to customer value and market positioning. These capabilities reflect fundamental architectural choices that determine scalability, accuracy, and operational integration within customer security workflows.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Capability</th>
+                  <th>TestMachine</th>
+                  <th>Static Analysis Tools</th>
+                  <th>Manual Audit Firms</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Analysis Method</td>
+                  <td class="success">Dynamic execution, RL agents</td>
+                  <td>Pattern matching</td>
+                  <td>Human code review</td>
+                </tr>
+                <tr>
+                  <td>False Positive Rate</td>
+                  <td class="success">0%</td>
+                  <td class="critical">15–40%</td>
+                  <td class="warning">5–15%</td>
+                </tr>
+                <tr>
+                  <td>Exploit Verification</td>
+                  <td class="success">Full exploit proof</td>
+                  <td class="critical">None</td>
+                  <td class="warning">Occasional PoC</td>
+                </tr>
+                <tr>
+                  <td>Scale</td>
+                  <td class="success">8M+ tokens</td>
+                  <td class="warning">Varies</td>
+                  <td class="critical">10–50/year</td>
+                </tr>
+                <tr>
+                  <td>Turnaround</td>
+                  <td class="success">Minutes to hours</td>
+                  <td class="success">Minutes</td>
+                  <td class="critical">Weeks to months</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 8: Revenue Model & Growth Requirements -->
+        <section class="section" id="revenue-projections">
+          <h2><span style="color: var(--accent);">8 /</span> Revenue Model &amp; Growth Requirements</h2>
+
+          <p>
+            Based on comprehensive analysis of TestMachine's revenue model through Q4 2028, the following projections detail the client acquisition requirements necessary to achieve target revenue milestones across all customer segments. These calculations are grounded in realistic pricing assumptions derived from current market rates and customer segment analysis, providing actionable targets for sales execution and capacity planning.
+          </p>
+
+          <h3 id="pricing-model"><span style="color: var(--accent);">8.1 /</span> Pricing Model Assumptions</h3>
+
+          <p>
+            Revenue projections are based on quarterly pricing tiers that reflect market positioning and customer segment characteristics. These assumptions align with competitive analysis and existing customer feedback, providing the foundation for scalable commercial execution.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Customer Segment</th>
+                  <th>Quarterly Price</th>
+                  <th>Market Positioning</th>
+                  <th>Value Justification</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Coinbase (Current)</strong></td>
+                  <td class="success">$120K</td>
+                  <td>Enterprise anchor client</td>
+                  <td>Proven ROI through 18+ months continuous deployment</td>
+                </tr>
+                <tr>
+                  <td><strong>DeFi Monitoring (Growth)</strong></td>
+                  <td class="success">$90K</td>
+                  <td>Protocol monitoring services</td>
+                  <td>Continuous security monitoring, threat intelligence</td>
+                </tr>
+                <tr>
+                  <td><strong>Small Auditors (Current)</strong></td>
+                  <td class="success">$80K</td>
+                  <td>Mid-market audit firms</td>
+                  <td>Cost-effective audit enhancement, competitive advantage</td>
+                </tr>
+                <tr>
+                  <td><strong>RWA/Tokenization (Growth)</strong></td>
+                  <td class="success">$80K</td>
+                  <td>Institutional asset security</td>
+                  <td>Regulatory compliance, institutional-grade security</td>
+                </tr>
+                <tr>
+                  <td><strong>Large Auditors (Growth)</strong></td>
+                  <td class="success">$75K</td>
+                  <td>Enterprise audit firms</td>
+                  <td>Audit throughput acceleration, quality enhancement</td>
+                </tr>
+                <tr>
+                  <td><strong>New Exchanges (Pipeline)</strong></td>
+                  <td class="success">$50K</td>
+                  <td>Enterprise exchanges</td>
+                  <td>Token listing security, regulatory compliance</td>
+                </tr>
+                <tr>
+                  <td><strong>Agentic AI (Growth)</strong></td>
+                  <td class="success">$25K</td>
+                  <td>Premium AI-driven security</td>
+                  <td>Autonomous threat detection, advanced analytics</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="growth-trajectory"><span style="color: var(--accent);">8.2 /</span> Revenue Growth Trajectory</h3>
+
+          <p>
+            TestMachine's revenue model demonstrates aggressive but achievable growth from current operations to significant market presence by 2028. The trajectory reflects both organic expansion within existing segments and systematic penetration of growth segments where strong product-market fit signals have been observed.
+          </p>
+
+          <div class="highlight success">
+            <strong>Growth Overview:</strong>
+            TestMachine's client requirements scale from 1 client (Coinbase) generating $120K quarterly revenue in Q1 2026 to 55.4 clients generating $3.3M quarterly revenue by Q4 2028. This represents a 55x increase in client volume and a 27x increase in quarterly revenue over the projection period.
+          </div>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th>Total Clients Required</th>
+                  <th>Quarterly Revenue</th>
+                  <th>Annual Revenue</th>
+                  <th>Growth Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Q1 2026</strong></td>
+                  <td class="success">1.0</td>
+                  <td class="success">$120K</td>
+                  <td>$480K</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td><strong>Q4 2026</strong></td>
+                  <td class="success">13.3</td>
+                  <td class="success">$960K</td>
+                  <td>$3.8M</td>
+                  <td>700% YoY</td>
+                </tr>
+                <tr>
+                  <td><strong>Q4 2027</strong></td>
+                  <td class="success">28.9</td>
+                  <td class="success">$1.8M</td>
+                  <td>$7.4M</td>
+                  <td>92% YoY</td>
+                </tr>
+                <tr>
+                  <td><strong>Q4 2028</strong></td>
+                  <td class="success">55.4</td>
+                  <td class="success">$3.3M</td>
+                  <td>$13.1M</td>
+                  <td>77% YoY</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="segment-requirements"><span style="color: var(--accent);">8.3 /</span> Client Requirements by Segment (Q4 2028)</h3>
+
+          <p>
+            By Q4 2028, TestMachine's revenue model requires strategic distribution across seven customer segments. With corrected pricing assumptions, the company needs 55.4 total clients generating $3.3M quarterly revenue. The segment distribution will be determined by market development and customer acquisition success across high-value segments (DeFi Monitoring at $90K, Small/RWA Auditors at $80K) and enterprise anchors (Coinbase at $120K).
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Revenue Target</th>
+                  <th>Q4 2028 Requirement</th>
+                  <th>Strategic Implication</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Total Clients Required</strong></td>
+                  <td class="success">55.4 clients</td>
+                  <td>55x growth from current baseline (1 client)</td>
+                </tr>
+                <tr>
+                  <td><strong>Quarterly Revenue Target</strong></td>
+                  <td class="success">$3.3M</td>
+                  <td>27x growth from current baseline ($120K)</td>
+                </tr>
+                <tr>
+                  <td><strong>Average Revenue per Client</strong></td>
+                  <td class="success">$59K</td>
+                  <td>Mix of enterprise ($120K+) and growth segments ($25K-90K)</td>
+                </tr>
+                <tr>
+                  <td><strong>Market Penetration Required</strong></td>
+                  <td class="warning">Multi-segment excellence</td>
+                  <td>Cannot rely on single segment—requires success across exchanges, auditors, protocols, and RWA</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight warning">
+            <strong>Segment Strategy:</strong>
+            With an average revenue per client of $59K, success requires a balanced portfolio. High-value enterprise clients (Coinbase at $120K, DeFi Monitoring at $90K) must be balanced with volume segments (Agentic AI at $25K) and growth markets (RWA/Tokenization at $80K). No single segment provides sufficient opportunity—TestMachine must execute across all customer categories simultaneously.
+          </div>
+
+          <h3 id="annual-progression"><span style="color: var(--accent);">8.4 /</span> Annual Client Acquisition Progression</h3>
+
+          <p>
+            The annual progression demonstrates accelerating client acquisition requirements as TestMachine scales from a single-segment enterprise provider to a multi-segment platform serving the full spectrum of blockchain security customers. Success requires systematic sales execution across multiple channels simultaneously.
+          </p>
+
+          <div class="table-container">
+            <table class="strategy-table">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Average Clients/Quarter</th>
+                  <th>Total Client-Quarters</th>
+                  <th>Average Quarterly Revenue</th>
+                  <th>Sales Execution Requirements</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>2026</strong></td>
+                  <td class="success">6.7</td>
+                  <td class="success">27</td>
+                  <td class="success">$540K</td>
+                  <td>Foundation: Self-serve platform, exchange expansion, auditor conversion</td>
+                </tr>
+                <tr>
+                  <td><strong>2027</strong></td>
+                  <td class="success">23.8</td>
+                  <td class="success">95</td>
+                  <td class="success">$1.6M</td>
+                  <td>Scale: DeFi protocol pilots, RWA market entry, systematic outbound</td>
+                </tr>
+                <tr>
+                  <td><strong>2028</strong></td>
+                  <td class="success">47.9</td>
+                  <td class="success">192</td>
+                  <td class="success">$2.8M</td>
+                  <td>Optimization: Multi-channel excellence, market leadership</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="execution-implications"><span style="color: var(--accent);">8.5 /</span> Strategic Execution Implications</h3>
+
+          <p>
+            These revenue requirements translate into specific operational challenges that TestMachine must address through systematic capability development. Scaling from 1 client to 55+ clients across seven distinct segments demands transition from single-customer enterprise service to systematic multi-channel customer acquisition with different sales cycles, decision-making processes, and value propositions.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 3rem 0;">
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Sales Infrastructure Scaling</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Reaching 55+ clients by Q4 2028 requires systematic sales infrastructure beyond individual relationship management. Automated pipeline development, standardized demo processes, and scalable onboarding become operational necessities rather than optimizations.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Multi-Segment Expertise</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Success across seven customer segments demands specialized expertise in RWA compliance requirements, DeFi protocol economics, audit firm workflows, and exchange operational needs. Generic security messaging will not convert at required rates.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Geographic Market Expansion</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Reaching 55+ clients across all segments by 2028 suggests international market expansion beyond current North American and European focus. Success may require systematic outreach across Asia-Pacific and emerging crypto markets.</p>
+            </div>
+            <div class="card">
+              <h5 style="color: var(--accent); margin-bottom: 0.75rem;">Product Platform Maturity</h5>
+              <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">Serving 55+ simultaneous clients requires platform architecture beyond current single-tenant enterprise deployments. Self-serve onboarding, automated billing, usage analytics, and multi-tenant security become infrastructure prerequisites.</p>
+            </div>
+          </div>
+
+          <div class="highlight warning">
+            <strong>Reality Check:</strong>
+            These projections assume successful execution across multiple growth segments simultaneously while maintaining current enterprise relationships. Scaling from 1 client to 55+ clients represents 55x growth over 3 years across seven distinct market segments. Success demands systematic international expansion, conversion of established audit firms with existing workflows, penetration of emerging RWA markets, and flawless execution of the product initiatives outlined in this document while maintaining competitive advantages in technology and market positioning.
+          </div>
+
+          <p>
+            <strong>Strategic imperative:</strong> The revenue model validates TestMachine's multi-initiative approach outlined in this document. No single customer segment provides sufficient market opportunity to achieve growth targets—success requires simultaneous excellence across exchanges, auditors, DeFi protocols, and emerging segments like RWA tokenization. The Foundation → Launch → Scale roadmap directly enables the systematic customer acquisition required for these revenue milestones.
+          </p>
+        </section>
+
+      </div><!-- /.article-body -->
+    </div><!-- /.main-container -->
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 TestMachine. Internal use only.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ==================== Progress bar ====================
+    function updateProgressBar() {
+      var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    }
+
+    // ==================== Nav scroll ====================
+    var nav = document.getElementById('navbar');
+    function handleNavScroll() {
+      if (window.scrollY > 10) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+
+    // ==================== Active section ====================
+    function highlightActiveSection() {
+      var sections = document.querySelectorAll('.section[id], h3[id], h4[id]');
+      var tocLinks = document.querySelectorAll('.toc a[href^="#"]');
+      var navHeight = 72;
+      var headerThreshold = navHeight + 10; // Highlight when section reaches this point from viewport top
+      
+      var activeSection = '';
+      
+      // Convert sections to array and sort by document order (top to bottom)
+      var sectionsArray = Array.from(sections);
+      sectionsArray.sort(function(a, b) {
+        return a.offsetTop - b.offsetTop;
+      });
+      
+      // Find candidate sections based on their position relative to the header threshold
+      var candidates = [];
+      
+      sectionsArray.forEach(function(section) {
+        var rect = section.getBoundingClientRect();
+        var sectionTop = rect.top;
+        var sectionBottom = rect.bottom;
+        
+        // Consider a section a candidate when:
+        // 1. Its top is at or above the header threshold (it has reached the header area)
+        // 2. Its bottom is still below the header threshold (it hasn't completely scrolled past)
+        if (sectionTop <= headerThreshold && sectionBottom > headerThreshold) {
+          candidates.push({
+            element: section,
+            distance: Math.abs(sectionTop - headerThreshold),
+            isSpanning: true
+          });
+        }
+        // Also consider sections that just passed the header threshold
+        else if (sectionTop <= headerThreshold) {
+          candidates.push({
+            element: section,
+            distance: headerThreshold - sectionTop,
+            isSpanning: false
+          });
+        }
+      });
+      
+      // Select the active section with bias toward larger section numbers
+      var selectedSection = null;
+      
+      if (candidates.length > 0) {
+        // If we have spanning candidates (sections that cross the header threshold), prefer those
+        var spanningCandidates = candidates.filter(function(c) { return c.isSpanning; });
+        
+        if (spanningCandidates.length > 0) {
+          // Among spanning candidates, favor the one that appears later in the document
+          // This implements the "favor larger section numbers" requirement
+          selectedSection = spanningCandidates[spanningCandidates.length - 1].element;
+        } else {
+          // No spanning sections, pick from non-spanning candidates
+          // Sort by distance and favor the later section when distances are close
+          candidates.sort(function(a, b) {
+            var distanceDiff = a.distance - b.distance;
+            // If distances are very close (within 20px), favor the later section
+            if (Math.abs(distanceDiff) <= 20) {
+              // Compare document position - return positive if a comes after b
+              return a.element.compareDocumentPosition(b.element) & Node.DOCUMENT_POSITION_PRECEDING ? 1 : -1;
+            }
+            return distanceDiff;
+          });
+          
+          selectedSection = candidates[0].element;
+        }
+      }
+      
+      if (selectedSection) {
+        activeSection = selectedSection.id;
+      }
+      
+      // Clear all active states
+      tocLinks.forEach(function(link) {
+        link.classList.remove('active');
+      });
+      
+      // Set active state
+      if (activeSection) {
+        var activeLink = document.querySelector('.toc a[href="#' + activeSection + '"]');
+        if (activeLink) {
+          activeLink.classList.add('active');
+          
+          // Auto-expand parent section on scroll (unless user recently clicked a chevron)
+          if (!window._tocManualOverride) {
+            var parentSubsections = activeLink.closest('.toc-subsections');
+            if (parentSubsections) {
+              var sectionMatch = parentSubsections.id.match(/toc-section-(\d+)/);
+              if (sectionMatch) {
+                var num = parseInt(sectionMatch[1], 10);
+                tocOpenSection(num);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', function() {
+      updateProgressBar();
+      handleNavScroll();
+      highlightActiveSection();
+    });
+
+    // ==================== Hamburger ====================
+    var hamburger = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
+    if (hamburger) {
+      hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+      });
+    }
+
+    // ==================== Mobile TOC ====================
+    document.getElementById('toc-toggle').onclick = function() {
+      document.getElementById('toc').classList.toggle('open');
+      document.getElementById('toc-overlay').classList.toggle('open');
+    };
+    document.getElementById('toc-overlay').onclick = function() {
+      document.getElementById('toc').classList.remove('open');
+      document.getElementById('toc-overlay').classList.remove('open');
+    };
+
+    // ==================== TOC Accordion — Complete Rebuild ====================
+    // SIMPLE ARCHITECTURE: Two functions + direct event handlers. No closures, no complex state.
+    
+    // Manual override: suppress scroll-based auto-expansion for 2s after a chevron click
+    window._tocManualOverride = false;
+    var _tocOverrideTimer = null;
+    
+    // Section number → scroll target mapping
+    var tocScrollTargets = {
+      1: 'executive-summary',
+      2: 'new-product-initiatives',
+      3: 'active-pipeline',
+      4: 'exchange-expansion',
+      5: 'implementation-roadmap',
+      6: 'development-velocity',
+      7: 'technology-foundation',
+      8: 'revenue-projections'
+    };
+
+    // Close ALL TOC sections (2-8). Dead simple.
+    function tocCloseAll() {
+      [2, 3, 4, 5, 6, 7, 8].forEach(function(n) {
+        var header = document.querySelector('.toc-section[data-section="' + n + '"]');
+        var subs = document.getElementById('toc-section-' + n);
+        if (header) header.classList.add('collapsed');
+        if (subs) subs.classList.add('collapsed');
+      });
+    }
+
+    // Open ONE specific section by number. Closes all others first.
+    function tocOpenSection(n) {
+      tocCloseAll();
+      var header = document.querySelector('.toc-section[data-section="' + n + '"]');
+      var subs = document.getElementById('toc-section-' + n);
+      if (header) header.classList.remove('collapsed');
+      if (subs) subs.classList.remove('collapsed');
+    }
+    
+    // ---- Initialize: all sections start collapsed ----
+    tocCloseAll();
+
+    // ---- Section 1 click handler (Executive Summary) ----
+    var section1Link = document.querySelector('.toc a[href="#executive-summary"]');
+    if (section1Link) {
+      section1Link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Set manual override so scroll handler doesn't fight us during smooth scroll
+        window._tocManualOverride = true;
+        if (_tocOverrideTimer) clearTimeout(_tocOverrideTimer);
+        _tocOverrideTimer = setTimeout(function() { window._tocManualOverride = false; }, 2000);
+
+        // Close all accordion sections 
+        tocCloseAll();
+
+        // Scroll to executive summary
+        var target = document.getElementById('executive-summary');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Close mobile TOC
+        var tocEl = document.getElementById('toc');
+        var overlay = document.getElementById('toc-overlay');
+        if (tocEl) tocEl.classList.remove('open');
+        if (overlay) overlay.classList.remove('open');
+      });
+    }
+
+    // ---- Chevron click handlers: simple, direct, no closures ----
+    [2, 3, 4, 5, 6, 7, 8].forEach(function(n) {
+      var header = document.querySelector('.toc-section[data-section="' + n + '"]');
+      if (!header) return;
+
+      var chevron = header.querySelector('.toc-chevron');
+      var text = header.querySelector('.toc-section-text');
+      var subs = document.getElementById('toc-section-' + n);
+
+      // Prevent default anchor navigation on the <a> element itself
+      header.addEventListener('click', function(e) {
+        e.preventDefault();
+      });
+
+      // Chevron click → toggle accordion
+      if (chevron && subs) {
+        chevron.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Set manual override so scroll doesn't fight us
+          window._tocManualOverride = true;
+          if (_tocOverrideTimer) clearTimeout(_tocOverrideTimer);
+          _tocOverrideTimer = setTimeout(function() { window._tocManualOverride = false; }, 2000);
+
+          // Read state BEFORE closing all
+          var wasCollapsed = subs.classList.contains('collapsed');
+
+          // Close everything
+          tocCloseAll();
+
+          // If it was closed, open it. If it was open, leave all closed (toggle).
+          if (wasCollapsed) {
+            header.classList.remove('collapsed');
+            subs.classList.remove('collapsed');
+          }
+        });
+      }
+
+      // Text click → open accordion + navigate to section
+      if (text) {
+        text.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Set manual override so scroll handler doesn't fight us during smooth scroll
+          window._tocManualOverride = true;
+          if (_tocOverrideTimer) clearTimeout(_tocOverrideTimer);
+          _tocOverrideTimer = setTimeout(function() { window._tocManualOverride = false; }, 2000);
+
+          // Open this section's accordion immediately
+          tocOpenSection(n);
+
+          // Scroll to the section
+          var targetId = tocScrollTargets[n];
+          var target = targetId ? document.getElementById(targetId) : null;
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Close mobile TOC
+          var tocEl = document.getElementById('toc');
+          var overlay = document.getElementById('toc-overlay');
+          if (tocEl) tocEl.classList.remove('open');
+          if (overlay) overlay.classList.remove('open');
+        });
+      }
+    });
+
+    // ==================== TOC smooth scroll (sub-links) ====================
+    document.querySelectorAll('.toc a:not(.toc-section)').forEach(function(anchor) {
+      anchor.addEventListener('click', function(e) {
+        if (this.getAttribute('href').startsWith('#')) {
+          e.preventDefault();
+          var target = document.getElementById(this.getAttribute('href').substring(1));
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var tocEl = document.getElementById('toc');
+          var overlay = document.getElementById('toc-overlay');
+          if (tocEl) tocEl.classList.remove('open');
+          if (overlay) overlay.classList.remove('open');
+          setTimeout(highlightActiveSection, 100);
+        }
+      });
+    });
+
+    // ---- Initialize ----
+    updateProgressBar();
+    handleNavScroll();
+    highlightActiveSection();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      highlightActiveSection();
+    });
+  </script>
+</body>
+</html>
