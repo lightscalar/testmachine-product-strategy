@@ -1011,59 +1011,254 @@ tbody tr:hover td {
             The centerpiece of TestMachine's educational content strategy is sophisticated technical demonstrations that showcase the platform's unique capabilities through live execution. These interactive demonstrations serve multiple purposes: they function as sales tools for prospects evaluating TestMachine's technology, educational resources for the broader security community, and credibility builders that demonstrate real capabilities rather than theoretical promises.
           </p>
 
-          <div style="margin: 3rem 0;">
-            <div style="position: relative; background: var(--bg-deeper); border-radius: 12px; padding: 24px; box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);">
-              <div style="position: absolute; top: 16px; left: 20px; z-index: 10; opacity: 0.6; display: flex; align-items: center; gap: 8px;">
-                <div style="width: 16px; height: 16px; background: var(--accent); border-radius: 2px;"></div>
-                <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); letter-spacing: 0.06em; text-transform: uppercase;">Contract State Space</span>
-              </div>
-              <span style="position: absolute; top: 16px; right: 20px; z-index: 10; opacity: 0.6; font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); letter-spacing: 0.04em;">PCA 16d → 3d</span>
-              <div style="position: relative; width: 100%; height: 400px; background: radial-gradient(circle at 50% 50%, oklch(0.18 0.02 260), oklch(0.12 0.01 260)); border-radius: 8px; overflow: hidden;">
-                <canvas id="rlDemoCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
-                <div style="position: absolute; bottom: 16px; right: 16px; background: oklch(0.15 0.005 260 / 0.9); backdrop-filter: blur(8px); padding: 12px 16px; border-radius: 6px; border: 1px solid var(--border-subtle);">
-                  <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-bottom: 4px;">Cumulative Reward</div>
-                  <div id="rlRewardValue" style="font-family: var(--font-mono); font-size: 18px; font-weight: 600; color: var(--accent);">0.00</div>
+          <!-- RL Agent Trajectory Visualization from TestMachine Homepage -->
+          <style>
+          /* Trajectory Visualization Styles */
+          .tm-trajectory-viz {
+            position: relative;
+            background: var(--bg-deeper);
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);
+            margin: 3rem 0;
+            overflow: hidden;
+          }
+          .tm-traj-canvas-wrap {
+            position: relative;
+            overflow: hidden;
+          }
+          .tm-trajectory-viz canvas {
+            display: block;
+            width: 100%;
+            height: 480px;
+            position: relative;
+            z-index: 1;
+          }
+          .tm-traj-target-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: oklch(0.11 0.005 260);
+            border-bottom: 1px solid var(--border-subtle);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+          }
+          .tm-traj-branding-overlay {
+            position: absolute;
+            top: 42px;
+            left: 14px;
+            z-index: 10;
+            opacity: 0.4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+          }
+          .tm-traj-pca-label {
+            position: absolute;
+            top: 42px;
+            right: 14px;
+            z-index: 10;
+            opacity: 0.4;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--fg-muted);
+            letter-spacing: 0.04em;
+          }
+          .tm-traj-reward-inset {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 10px 4px;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            border-radius: 6px;
+          }
+          .tm-traj-reward-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+          }
+          .tm-traj-reward-title {
+            color: var(--fg-dim);
+          }
+          .tm-traj-reward-val {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.65rem;
+          }
+          .tm-traj-hud-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: oklch(0.11 0.005 260);
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            gap: 12px;
+            flex-wrap: wrap;
+          }
+          .tm-traj-hud-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+          .tm-traj-hud-tag {
+            color: var(--fg-dim);
+            white-space: nowrap;
+          }
+          .tm-traj-hud-legend {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+          }
+          .tm-trajectory-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+          }
+          .tm-trajectory-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+          }
+          .tm-traj-target-label {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            padding: 2px 6px;
+            border: 1px solid var(--accent);
+            flex-shrink: 0;
+          }
+          .tm-traj-target-addr {
+            color: var(--fg-muted);
+            letter-spacing: 0.02em;
+          }
+          .tm-traj-target-name {
+            color: var(--fg-dim);
+            margin-left: auto;
+          }
+          .tm-traj-nav {
+            display: flex;
+            gap: 2px;
+            justify-content: center;
+            padding: 8px 0 4px;
+            flex-wrap: wrap;
+          }
+          .tm-traj-nav-btn {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            padding: 6px 14px;
+            background: transparent;
+            color: var(--fg-dim);
+            border: 1px solid var(--border-subtle);
+            cursor: pointer;
+            transition: all 0.15s;
+            letter-spacing: 0.02em;
+          }
+          .tm-traj-nav-btn:hover {
+            color: var(--fg);
+            border-color: var(--fg-muted);
+          }
+          .tm-traj-nav-btn.tm-traj-nav-active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+          }
+          .tm-traj-nav-btn.tm-traj-nav-done {
+            color: var(--fg-muted);
+            border-color: var(--accent);
+            opacity: 0.5;
+          }
+          @media (max-width: 768px) {
+            .tm-trajectory-viz canvas { height: 350px; }
+            .tm-traj-target-bar { flex-wrap: wrap; gap: 4px 8px; }
+            .tm-traj-target-name { margin-left: 0; }
+          }
+          @media (max-width: 599px) {
+            .tm-trajectory-viz canvas { height: 280px; }
+            .tm-traj-reward-inset { display: none !important; }
+            .tm-traj-hud-strip { display: none !important; }
+            .tm-traj-branding-overlay,
+            .tm-traj-pca-label { display: none !important; }
+            .tm-traj-target-bar {
+              font-size: 0.55rem;
+              padding: 8px 12px;
+              gap: 6px;
+            }
+            .tm-traj-target-name { display: none; }
+            .tm-traj-nav { gap: 2px; padding: 6px 4px 2px; flex-wrap: wrap; justify-content: center; }
+            .tm-traj-nav-btn {
+              font-size: 0.52rem;
+              padding: 4px 6px;
+              letter-spacing: 0;
+              white-space: nowrap;
+              flex-shrink: 0;
+            }
+          }
+          </style>
+
+          <div class="tm-trajectory-viz">
+            <div class="tm-traj-target-bar">
+              <span class="tm-traj-target-label">ANALYZING</span>
+              <span class="tm-traj-target-addr" id="tmTrajTargetAddr">Uniswap/v2-periphery</span>
+              <span class="tm-traj-target-name" id="tmTrajTargetName">UniswapV2Router02.sol · Solidity · 6,241 LOC</span>
+            </div>
+            <div class="tm-traj-branding-overlay">
+              <span style="font-family: var(--font-mono); font-size: 13px; color: var(--fg-muted); letter-spacing: 0.06em; text-transform: uppercase;">Contract State Space</span>
+            </div>
+            <span class="tm-traj-pca-label">PCA 16d → 3d</span>
+            <div class="tm-traj-canvas-wrap">
+              <canvas id="tmTrajectoryCanvas"></canvas>
+              <div class="tm-traj-reward-inset">
+                <div class="tm-traj-reward-header">
+                  <span class="tm-traj-reward-title">Cumulative Reward</span>
+                  <span class="tm-traj-reward-val" id="tmTrajRewardVal">0.00</span>
                 </div>
-              </div>
-              <div style="margin-top: 16px; display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 12px;">
-                <span style="color: var(--fg-muted);">fn call + args →</span>
-                <div id="rlLegend" style="display: flex; gap: 12px; flex-wrap: wrap;"></div>
+                <canvas id="tmTrajRewardChart" width="220" height="80"></canvas>
               </div>
             </div>
-            <p style="text-align: center; font-size: 0.875rem; color: var(--fg-muted); font-style: italic; line-height: 1.6; margin-top: 1rem;">
+            <div class="tm-traj-hud-strip">
+              <div class="tm-traj-hud-info">
+                <span class="tm-traj-hud-tag" id="tmTrajEpisode">0/200</span>
+                <span class="tm-traj-hud-tag" id="tmTrajStep">0/50</span>
+                <span class="tm-traj-hud-tag" id="tmTrajActionCurrent">—</span>
+              </div>
+              <div class="tm-traj-hud-legend" id="tmTrajLegend"></div>
+            </div>
+            <div class="tm-traj-nav" id="tmTrajNav">
+              <button class="tm-traj-nav-btn" data-traj-ep="0">Exploration</button>
+              <button class="tm-traj-nav-btn" data-traj-ep="60">Early Signal</button>
+              <button class="tm-traj-nav-btn" data-traj-ep="120">Convergence</button>
+              <button class="tm-traj-nav-btn" data-traj-ep="180">Reinforced</button>
+              <button class="tm-traj-nav-btn" data-traj-ep="199">Exploit</button>
+            </div>
+            <p style="text-align: center; font-size: 0.875rem; color: var(--fg-muted); font-style: italic; line-height: 1.6; margin: 1rem 16px; padding-top: 12px;">
               <strong>Live RL Demo:</strong> Interactive demonstration of reinforcement learning agents attacking smart contracts on forked mainnet environments. This showcases TestMachine's core differentiator—verified exploits, not theoretical vulnerabilities.
             </p>
           </div>
 
           <script>
           (function() {
-            var canvas = document.getElementById('rlDemoCanvas');
+            var canvas = document.getElementById('tmTrajectoryCanvas');
             if (!canvas) return;
             var ctx = canvas.getContext('2d');
-            var rewardEl = document.getElementById('rlRewardValue');
-            var legendEl = document.getElementById('rlLegend');
-            
-            // High DPI canvas setup
-            function resizeCanvas() {
-              var rect = canvas.getBoundingClientRect();
-              var dpr = window.devicePixelRatio || 1;
-              canvas.width = rect.width * dpr;
-              canvas.height = rect.height * dpr;
-              ctx.scale(dpr, dpr);
-              canvas.style.width = rect.width + 'px';
-              canvas.style.height = rect.height + 'px';
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-            
-            // Animation state
-            var points = [];
-            var currentReward = 0;
-            var animationPhase = 0;
-            var startTime = Date.now();
-            
-            // Colors for different function calls
-            var colors = [
+            var elEp = document.getElementById('tmTrajEpisode');
+            var elStep = document.getElementById('tmTrajStep');
+            var elAction = document.getElementById('tmTrajActionCurrent');
+            var elLegend = document.getElementById('tmTrajLegend');
+            var elRewardVal = document.getElementById('tmTrajRewardVal');
+            var rewardChart = document.getElementById('tmTrajRewardChart');
+            var rewardChartCtx = rewardChart ? rewardChart.getContext('2d') : null;
+            var rewardHistory = [];
+
+            // Color palette — consistent across all scenarios
+            var COLORS = [
               [45, 212, 191],   // teal
               [239, 68, 100],   // red-pink
               [96, 165, 250],   // sky blue
@@ -1071,92 +1266,333 @@ tbody tr:hover td {
               [167, 139, 250],  // purple
               [52, 211, 153]    // emerald
             ];
-            
-            var functions = [
-              {name: 'deposit()', abbr: 'deposit', color: colors[0]},
-              {name: 'withdraw()', abbr: 'withdraw', color: colors[1]},
-              {name: 'swap()', abbr: 'swap', color: colors[2]},
-              {name: 'flashLoan()', abbr: 'flash', color: colors[3]},
-              {name: 'liquidate()', abbr: 'liquidate', color: colors[4]},
-              {name: 'execute()', abbr: 'execute', color: colors[5]}
-            ];
-            
+
+            // Scenario data
+            var currentScenario = {
+              target: { addr: 'Uniswap/v2-periphery', name: 'UniswapV2Router02.sol', chain: 'Solidity · 6,241 LOC' },
+              fns: ['deposit()', 'withdraw()', 'swapExactTokens()', 'addLiquidity()', 'removeLiquidity()', 'getAmountsOut()'],
+              abbrs: ['deposit', 'withdraw', 'swap', 'addLiq', 'removeLiq', 'getAmounts']
+            };
+
+            var functions = [];
+            for (var i = 0; i < currentScenario.fns.length; i++) {
+              functions.push({ name: currentScenario.fns[i], color: COLORS[i], abbr: currentScenario.abbrs[i] });
+            }
+
             // Update legend
-            if (legendEl) {
-              legendEl.innerHTML = functions.map(function(f, i) {
-                return '<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 10px; height: 10px; background: rgb(' + f.color.join(',') + '); border-radius: 50%;"></div><span style="color: var(--fg-muted);">' + f.abbr + '</span></div>';
+            if (elLegend) {
+              elLegend.innerHTML = '<span style="font-family: var(--font-mono); font-size: 0.55rem; color: var(--fg-dim); letter-spacing: 0.04em; margin-right: 8px; text-transform: uppercase;">fn call + args →</span>' + functions.map(function(f) {
+                return '<div class="tm-trajectory-legend-item"><div class="tm-trajectory-legend-dot" style="background:rgb('+f.color.join(',')+')"></div><span style="color: var(--fg-muted);">'+f.abbr+'</span></div>';
               }).join('');
             }
-            
-            // Generate exploration trajectory
-            function generatePoint(t) {
-              var w = canvas.getBoundingClientRect().width;
-              var h = canvas.getBoundingClientRect().height;
-              var progress = (t % 8000) / 8000; // 8 second cycles
-              
-              // Spiral toward exploit region
-              var angle = progress * Math.PI * 4;
-              var radius = (1 - progress) * Math.min(w, h) * 0.3;
-              var x = w/2 + Math.cos(angle) * radius + (Math.random() - 0.5) * 20;
-              var y = h/2 + Math.sin(angle) * radius + (Math.random() - 0.5) * 20;
-              
-              return {
-                x: x,
-                y: y,
-                colorIndex: Math.floor(Math.random() * functions.length),
-                age: 0,
-                reward: progress * 100
-              };
-            }
-            
-            // Animation loop
-            function animate() {
-              var now = Date.now();
-              var elapsed = now - startTime;
-              
-              // Clear canvas
-              ctx.clearRect(0, 0, canvas.getBoundingClientRect().width, canvas.getBoundingClientRect().height);
-              
-              // Add new points
-              if (elapsed % 200 < 16) { // ~5 FPS point generation
-                points.push(generatePoint(elapsed));
+
+            // Golden path generation
+            var GOLDEN = [];
+            var basin = [2.0, -1.2, 1.5];
+            var GOLDEN_STEPS = 35;
+
+            function buildGolden() {
+              GOLDEN = [];
+              for (var i = 0; i <= GOLDEN_STEPS; i++) {
+                var t = i / GOLDEN_STEPS;
+                var x = Math.cos(t * Math.PI * 2.5) * (2.5 - t * 1.8) + Math.sin(t * Math.PI * 4) * 0.3;
+                var y = Math.sin(t * Math.PI * 1.8) * (1.8 - t * 1.2) + Math.cos(t * Math.PI * 3) * 0.4;
+                var z = Math.sin(t * Math.PI * 3.2) * (1.5 - t * 0.9) + Math.sin(t * Math.PI * 6) * 0.2;
+                GOLDEN.push([x, y, z]);
               }
-              
-              // Update and draw points
-              points = points.filter(function(point) {
-                point.age += 16;
-                
-                var alpha = Math.max(0, 1 - point.age / 2000);
-                var color = functions[point.colorIndex].color;
-                var size = 3 + Math.sin(point.age / 100) * 1;
-                
-                ctx.beginPath();
-                ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(' + color.join(',') + ',' + alpha + ')';
-                ctx.fill();
-                
-                // Trail effect
-                if (point.age > 100) {
-                  ctx.beginPath();
-                  ctx.arc(point.x, point.y, size * 2, 0, Math.PI * 2);
-                  ctx.fillStyle = 'rgba(' + color.join(',') + ',' + alpha * 0.3 + ')';
-                  ctx.fill();
+            }
+            buildGolden();
+
+            var TOTAL_EPS = 200;
+            var allBolts = [];
+            var rewardCap = 18 + Math.random() * 8;
+
+            function generateBolts() {
+              allBolts = [];
+              for (var ep = 0; ep < TOTAL_EPS; ep++) {
+                var progress = ep / TOTAL_EPS;
+                var lockOn = 1 / (1 + Math.exp(-18 * (progress - 0.35)));
+                var noise = 0.65 * (1 - lockOn) + 0.005;
+                var points = [];
+                var fns = [];
+                var nSteps = Math.round(GOLDEN.length * lockOn + (20 + Math.random() * 15) * (1 - lockOn));
+
+                for (var s = 0; s < nSteps; s++) {
+                  var gt = Math.min(s / (nSteps - 1), 1);
+                  var gi = gt * (GOLDEN.length - 1);
+                  var glo = Math.min(Math.floor(gi), GOLDEN.length - 2);
+                  var gfr = gi - glo;
+                  var ref = [
+                    GOLDEN[glo][0] + (GOLDEN[glo+1] ? (GOLDEN[glo+1][0] - GOLDEN[glo][0]) * gfr : 0),
+                    GOLDEN[glo][1] + (GOLDEN[glo+1] ? (GOLDEN[glo+1][1] - GOLDEN[glo][1]) * gfr : 0),
+                    GOLDEN[glo][2] + (GOLDEN[glo+1] ? (GOLDEN[glo+1][2] - GOLDEN[glo][2]) * gfr : 0)
+                  ];
+                  points.push([
+                    Math.max(-3.5, Math.min(3.5, ref[0] + (Math.random() - 0.5) * noise * 2)),
+                    Math.max(-3.5, Math.min(3.5, ref[1] + (Math.random() - 0.5) * noise * 2)),
+                    Math.max(-3.5, Math.min(3.5, ref[2] + (Math.random() - 0.5) * noise * 2))
+                  ]);
+                  
+                  var fn;
+                  if (lockOn > 0.5) {
+                    var exploitPattern = [0, 2, 4, 0, 1, 3, 5, 4, 1, 1];
+                    var patIdx = Math.floor(gt * exploitPattern.length * 1.5) % exploitPattern.length;
+                    fn = (Math.random() < 0.15) ? Math.floor(Math.random() * 6) : exploitPattern[patIdx];
+                  } else {
+                    fn = Math.floor(Math.random() * 6);
+                  }
+                  fns.push(fn);
                 }
-                
-                return point.age < 2000;
-              });
-              
-              // Update reward
-              currentReward = Math.max(currentReward, Math.max.apply(Math, points.map(function(p) { return p.reward || 0; })));
-              if (rewardEl) {
-                rewardEl.textContent = currentReward.toFixed(1);
+
+                var baseReward = rewardCap / (1 + Math.exp(-10 * (progress - 0.45)));
+                var volatility = 2.5 * (1 - lockOn) + 0.15;
+                var rewardNoise = (Math.random() - 0.5) * 2 * volatility;
+                var cumR = Math.max(0, baseReward + rewardNoise);
+
+                allBolts.push({
+                  points: points,
+                  fns: fns,
+                  reward: cumR,
+                  converged: lockOn > 0.6
+                });
               }
-              
-              requestAnimationFrame(animate);
             }
-            
-            // Start animation
-            animate();
+            generateBolts();
+
+            var angle = 0;
+            var currentEp = 0;
+            var animStartTime = 0;
+            var STEP_MS = 7;
+            var EP_GAP_MS = 35;
+            var running = false;
+            var drawnTrails = [];
+            var baseScale = 0.11;
+
+            function project(x, y, z, w, h) {
+              var c = Math.cos(angle), s = Math.sin(angle);
+              var rx = x*c - z*s, rz = x*s + z*c;
+              var tilt = -0.45, c2 = Math.cos(tilt), s2 = Math.sin(tilt);
+              var ry = y*c2 - rz*s2, rz2 = y*s2 + rz*c2;
+              var p = 5/(5+rz2);
+              return { sx: w/2 + rx*p*w*baseScale, sy: h/2 - ry*p*h*baseScale, scale: p, depth: rz2 };
+            }
+
+            function resizeCanvas() {
+              var rect = canvas.parentElement.getBoundingClientRect();
+              var dpr = Math.min(window.devicePixelRatio || 1, 2);
+              canvas.width = rect.width * dpr;
+              var cssH = rect.width < 600 ? 280 : rect.width < 768 ? 350 : 480;
+              canvas.height = cssH * dpr;
+              canvas.style.width = rect.width + 'px';
+              canvas.style.height = cssH + 'px';
+              ctx.scale(dpr, dpr);
+            }
+
+            function drawRewardChart() {
+              if (!rewardChartCtx || rewardHistory.length === 0) return;
+              var w = rewardChart.width, h = rewardChart.height;
+              rewardChartCtx.clearRect(0, 0, w, h);
+
+              var maxR = Math.max.apply(Math, rewardHistory);
+              if (maxR === 0) return;
+
+              rewardChartCtx.strokeStyle = 'rgba(45,212,191,0.7)';
+              rewardChartCtx.lineWidth = 1.5;
+              rewardChartCtx.beginPath();
+
+              for (var i = 0; i < rewardHistory.length; i++) {
+                var x = (i / Math.max(rewardHistory.length - 1, 1)) * w;
+                var y = h - (rewardHistory[i] / maxR) * h;
+                if (i === 0) rewardChartCtx.moveTo(x, y);
+                else rewardChartCtx.lineTo(x, y);
+              }
+              rewardChartCtx.stroke();
+            }
+
+            function draw(ts) {
+              if (!running) return;
+              if (!animStartTime) animStartTime = ts;
+
+              var w = canvas.width / (canvas._dpr || window.devicePixelRatio || 1);
+              var h = canvas.height / (canvas._dpr || window.devicePixelRatio || 1);
+              ctx.clearRect(0, 0, w, h);
+
+              angle -= 0.002;
+              var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+              // Grid
+              ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)';
+              ctx.lineWidth = 0.5;
+              for (var g = -4; g <= 4; g++) {
+                var a = project(g,0,-4,w,h), b = project(g,0,4,w,h);
+                ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+                a = project(-4,0,g,w,h); b = project(4,0,g,w,h);
+                ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+              }
+
+              // Calculate current episode and step
+              var elapsed = ts - animStartTime;
+              var t = 0;
+              var epIdx = 0, stepIdx = 0;
+              for (var e = 0; e < allBolts.length; e++) {
+                var epLen = allBolts[e].points.length * STEP_MS + EP_GAP_MS;
+                if (elapsed < t + epLen) {
+                  epIdx = e;
+                  stepIdx = Math.min(Math.floor((elapsed - t) / STEP_MS), allBolts[e].points.length - 1);
+                  break;
+                }
+                t += epLen;
+                if (e >= drawnTrails.length) {
+                  drawnTrails.push(allBolts[e]);
+                  rewardHistory.push(allBolts[e].reward);
+                }
+                if (e === allBolts.length - 1) {
+                  setTimeout(function() {
+                    animStartTime = 0;
+                    drawnTrails = [];
+                    rewardHistory = [];
+                    generateBolts();
+                    buildGolden();
+                    running = true;
+                    requestAnimationFrame(draw);
+                  }, 4000);
+                  running = false;
+                  return;
+                }
+              }
+              currentEp = epIdx;
+
+              // Draw completed trails with phosphor effect
+              for (var ti = 0; ti < drawnTrails.length; ti++) {
+                var trail = drawnTrails[ti];
+                var age = (ts - animStartTime) - (ti * (50 * STEP_MS + EP_GAP_MS));
+                var fade = Math.max(0.1, Math.exp(-age * 0.693 / 8000));
+                
+                var proj = [];
+                for (var i = 0; i < trail.points.length; i++)
+                  proj.push(project(trail.points[i][0], trail.points[i][1], trail.points[i][2], w, h));
+
+                if (proj.length < 2) continue;
+
+                var alpha = trail.converged ? 0.3 * fade : 0.12 * fade;
+                ctx.lineWidth = trail.converged ? 2.5 : 1.5;
+                ctx.globalCompositeOperation = isDark && !trail.converged ? 'lighter' : 'source-over';
+                
+                // Multi-pass glow for converged trails
+                var passes = trail.converged ? [
+                  { w: 8, a: alpha * 0.2 },
+                  { w: 3, a: alpha * 0.6 },
+                  { w: 1.5, a: alpha * 1.0 }
+                ] : [{ w: 1.5, a: alpha }];
+
+                for (var p = 0; p < passes.length; p++) {
+                  ctx.lineWidth = passes[p].w;
+                  for (var i = 1; i < proj.length; i++) {
+                    var fnIdx = trail.fns[Math.min(i-1, trail.fns.length-1)] || 0;
+                    var color = COLORS[fnIdx];
+                    
+                    if (trail.converged) {
+                      ctx.strokeStyle = 'rgba('+color[0]+','+color[1]+','+color[2]+','+passes[p].a+')';
+                    } else {
+                      var blended = isDark ? 
+                        [color[0]*0.4+80*0.6, color[1]*0.4+110*0.6, color[2]*0.4+160*0.6] :
+                        [color[0]*0.5+60*0.5, color[1]*0.5+80*0.5, color[2]*0.5+120*0.5];
+                      ctx.strokeStyle = 'rgba('+Math.round(blended[0])+','+Math.round(blended[1])+','+Math.round(blended[2])+','+passes[p].a+')';
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(proj[i-1].sx, proj[i-1].sy);
+                    ctx.lineTo(proj[i].sx, proj[i].sy);
+                    ctx.stroke();
+                  }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+              }
+
+              // Draw active bolt
+              var activeBolt = allBolts[epIdx];
+              if (activeBolt && stepIdx >= 0) {
+                var aProj = [];
+                for (var i = 0; i <= stepIdx; i++)
+                  aProj.push(project(activeBolt.points[i][0], activeBolt.points[i][1], activeBolt.points[i][2], w, h));
+
+                if (aProj.length > 1) {
+                  var progress = epIdx / allBolts.length;
+                  var brightness = 0.4 + progress * 0.6;
+                  
+                  // Glow layers for active bolt
+                  var activePasses = [
+                    { w: 6, a: brightness * 0.3 },
+                    { w: 3, a: brightness * 0.7 },
+                    { w: 1.5, a: brightness * 1.0 }
+                  ];
+                  
+                  for (var ap = 0; ap < activePasses.length; ap++) {
+                    ctx.lineWidth = activePasses[ap].w;
+                    for (var i = 1; i < aProj.length; i++) {
+                      var fnIdx = activeBolt.fns[Math.min(i-1, activeBolt.fns.length-1)] || 0;
+                      var color = COLORS[fnIdx];
+                      var boost = ap === activePasses.length - 1 ? 40 : 0;
+                      ctx.strokeStyle = 'rgba('+(Math.min(255,color[0]+boost))+','+(Math.min(255,color[1]+boost))+','+(Math.min(255,color[2]+boost))+','+activePasses[ap].a+')';
+                      
+                      ctx.beginPath();
+                      ctx.moveTo(aProj[i-1].sx, aProj[i-1].sy);
+                      ctx.lineTo(aProj[i].sx, aProj[i].sy);
+                      ctx.stroke();
+                    }
+                  }
+
+                  // Bright tip
+                  var tip = aProj[aProj.length - 1];
+                  ctx.fillStyle = 'rgba(45,212,191,' + (brightness * 0.8) + ')';
+                  ctx.beginPath();
+                  ctx.arc(tip.sx, tip.sy, 4, 0, Math.PI * 2);
+                  ctx.fill();
+                  
+                  if (isDark) {
+                    ctx.fillStyle = 'rgba(150,215,255,' + (brightness * 0.4) + ')';
+                    ctx.beginPath();
+                    ctx.arc(tip.sx, tip.sy, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                  }
+                }
+
+                // Update HUD
+                if (elEp) elEp.textContent = (epIdx + 1) + '/200';
+                if (elStep) elStep.textContent = (stepIdx + 1) + '/' + activeBolt.points.length;
+                if (elAction && activeBolt.fns[stepIdx] !== undefined) {
+                  elAction.textContent = functions[activeBolt.fns[stepIdx]].abbr;
+                }
+                if (elRewardVal) elRewardVal.textContent = activeBolt.reward.toFixed(1);
+              }
+
+              drawRewardChart();
+              requestAnimationFrame(draw);
+            }
+
+            // Navigation buttons
+            var navBtns = document.querySelectorAll('.tm-traj-nav-btn');
+            navBtns.forEach(function(btn, idx) {
+              btn.addEventListener('click', function() {
+                var ep = parseInt(btn.getAttribute('data-traj-ep')) || 0;
+                navBtns.forEach(function(b, bi) {
+                  b.classList.remove('tm-traj-nav-active', 'tm-traj-nav-done');
+                  if (bi <= idx) b.classList.add('tm-traj-nav-done');
+                });
+                btn.classList.add('tm-traj-nav-active');
+                
+                currentEp = ep;
+                drawnTrails = allBolts.slice(0, ep);
+                rewardHistory = allBolts.slice(0, ep).map(function(b) { return b.reward; });
+                animStartTime = performance.now() - (ep * (50 * STEP_MS + EP_GAP_MS));
+              });
+            });
+
+            // Start
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            running = true;
+            requestAnimationFrame(draw);
           })();
           </script>
 
