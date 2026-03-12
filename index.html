@@ -1005,20 +1005,160 @@ tbody tr:hover td {
             Rather than traditional marketing approaches, TestMachine's social outreach strategy centers on educational value and technical demonstration. By sharing security research, vulnerability discoveries, and behind-the-scenes development processes, the company builds credibility through expertise demonstration rather than promotional messaging. This approach aligns with developer and security professional expectations in the blockchain space, where technical authority drives purchase decisions.
           </div>
 
-          <h4><span style="color: var(--accent);">2.8.1 /</span> Video-First Strategy for Complex Technical Concepts</h4>
+          <h4><span style="color: var(--accent);">2.8.1 /</span> Interactive Technical Demonstrations</h4>
 
           <p>
-            The centerpiece of TestMachine's educational content strategy is sophisticated technical demonstrations that showcase the platform's unique capabilities through live execution. These videos serve multiple purposes: they function as sales tools for prospects evaluating TestMachine's technology, educational resources for the broader security community, and credibility builders that demonstrate real capabilities rather than theoretical promises.
+            The centerpiece of TestMachine's educational content strategy is sophisticated technical demonstrations that showcase the platform's unique capabilities through live execution. These interactive demonstrations serve multiple purposes: they function as sales tools for prospects evaluating TestMachine's technology, educational resources for the broader security community, and credibility builders that demonstrate real capabilities rather than theoretical promises.
           </p>
 
-          <div style="margin: 3rem 0; text-align: center;">
-            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);">
-              <iframe src="https://testmachine.lightscalar.net" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 12px;" title="TestMachine RL Demo - Live Reinforcement Learning Agent Attack Demonstration"></iframe>
+          <div style="margin: 3rem 0;">
+            <div style="position: relative; background: var(--bg-deeper); border-radius: 12px; padding: 24px; box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);">
+              <div style="position: absolute; top: 16px; left: 20px; z-index: 10; opacity: 0.6; display: flex; align-items: center; gap: 8px;">
+                <div style="width: 16px; height: 16px; background: var(--accent); border-radius: 2px;"></div>
+                <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); letter-spacing: 0.06em; text-transform: uppercase;">Contract State Space</span>
+              </div>
+              <span style="position: absolute; top: 16px; right: 20px; z-index: 10; opacity: 0.6; font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); letter-spacing: 0.04em;">PCA 16d → 3d</span>
+              <div style="position: relative; width: 100%; height: 400px; background: radial-gradient(circle at 50% 50%, oklch(0.18 0.02 260), oklch(0.12 0.01 260)); border-radius: 8px; overflow: hidden;">
+                <canvas id="rlDemoCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                <div style="position: absolute; bottom: 16px; right: 16px; background: oklch(0.15 0.005 260 / 0.9); backdrop-filter: blur(8px); padding: 12px 16px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                  <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-bottom: 4px;">Cumulative Reward</div>
+                  <div id="rlRewardValue" style="font-family: var(--font-mono); font-size: 18px; font-weight: 600; color: var(--accent);">0.00</div>
+                </div>
+              </div>
+              <div style="margin-top: 16px; display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 12px;">
+                <span style="color: var(--fg-muted);">fn call + args →</span>
+                <div id="rlLegend" style="display: flex; gap: 12px; flex-wrap: wrap;"></div>
+              </div>
             </div>
             <p style="text-align: center; font-size: 0.875rem; color: var(--fg-muted); font-style: italic; line-height: 1.6; margin-top: 1rem;">
-              <strong>Live RL Demo:</strong> Interactive demonstration of reinforcement learning agents attacking smart contracts on forked mainnet environments. This showcases TestMachine's core differentiator—verified exploits, not theoretical vulnerabilities. <a href="https://testmachine.lightscalar.net" target="_blank" style="color: var(--accent);">View live demo →</a>
+              <strong>Live RL Demo:</strong> Interactive demonstration of reinforcement learning agents attacking smart contracts on forked mainnet environments. This showcases TestMachine's core differentiator—verified exploits, not theoretical vulnerabilities.
             </p>
           </div>
+
+          <script>
+          (function() {
+            var canvas = document.getElementById('rlDemoCanvas');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            var rewardEl = document.getElementById('rlRewardValue');
+            var legendEl = document.getElementById('rlLegend');
+            
+            // High DPI canvas setup
+            function resizeCanvas() {
+              var rect = canvas.getBoundingClientRect();
+              var dpr = window.devicePixelRatio || 1;
+              canvas.width = rect.width * dpr;
+              canvas.height = rect.height * dpr;
+              ctx.scale(dpr, dpr);
+              canvas.style.width = rect.width + 'px';
+              canvas.style.height = rect.height + 'px';
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Animation state
+            var points = [];
+            var currentReward = 0;
+            var animationPhase = 0;
+            var startTime = Date.now();
+            
+            // Colors for different function calls
+            var colors = [
+              [45, 212, 191],   // teal
+              [239, 68, 100],   // red-pink
+              [96, 165, 250],   // sky blue
+              [251, 191, 36],   // amber
+              [167, 139, 250],  // purple
+              [52, 211, 153]    // emerald
+            ];
+            
+            var functions = [
+              {name: 'deposit()', abbr: 'deposit', color: colors[0]},
+              {name: 'withdraw()', abbr: 'withdraw', color: colors[1]},
+              {name: 'swap()', abbr: 'swap', color: colors[2]},
+              {name: 'flashLoan()', abbr: 'flash', color: colors[3]},
+              {name: 'liquidate()', abbr: 'liquidate', color: colors[4]},
+              {name: 'execute()', abbr: 'execute', color: colors[5]}
+            ];
+            
+            // Update legend
+            if (legendEl) {
+              legendEl.innerHTML = functions.map(function(f, i) {
+                return '<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 10px; height: 10px; background: rgb(' + f.color.join(',') + '); border-radius: 50%;"></div><span style="color: var(--fg-muted);">' + f.abbr + '</span></div>';
+              }).join('');
+            }
+            
+            // Generate exploration trajectory
+            function generatePoint(t) {
+              var w = canvas.getBoundingClientRect().width;
+              var h = canvas.getBoundingClientRect().height;
+              var progress = (t % 8000) / 8000; // 8 second cycles
+              
+              // Spiral toward exploit region
+              var angle = progress * Math.PI * 4;
+              var radius = (1 - progress) * Math.min(w, h) * 0.3;
+              var x = w/2 + Math.cos(angle) * radius + (Math.random() - 0.5) * 20;
+              var y = h/2 + Math.sin(angle) * radius + (Math.random() - 0.5) * 20;
+              
+              return {
+                x: x,
+                y: y,
+                colorIndex: Math.floor(Math.random() * functions.length),
+                age: 0,
+                reward: progress * 100
+              };
+            }
+            
+            // Animation loop
+            function animate() {
+              var now = Date.now();
+              var elapsed = now - startTime;
+              
+              // Clear canvas
+              ctx.clearRect(0, 0, canvas.getBoundingClientRect().width, canvas.getBoundingClientRect().height);
+              
+              // Add new points
+              if (elapsed % 200 < 16) { // ~5 FPS point generation
+                points.push(generatePoint(elapsed));
+              }
+              
+              // Update and draw points
+              points = points.filter(function(point) {
+                point.age += 16;
+                
+                var alpha = Math.max(0, 1 - point.age / 2000);
+                var color = functions[point.colorIndex].color;
+                var size = 3 + Math.sin(point.age / 100) * 1;
+                
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(' + color.join(',') + ',' + alpha + ')';
+                ctx.fill();
+                
+                // Trail effect
+                if (point.age > 100) {
+                  ctx.beginPath();
+                  ctx.arc(point.x, point.y, size * 2, 0, Math.PI * 2);
+                  ctx.fillStyle = 'rgba(' + color.join(',') + ',' + alpha * 0.3 + ')';
+                  ctx.fill();
+                }
+                
+                return point.age < 2000;
+              });
+              
+              // Update reward
+              currentReward = Math.max(currentReward, Math.max.apply(Math, points.map(function(p) { return p.reward || 0; })));
+              if (rewardEl) {
+                rewardEl.textContent = currentReward.toFixed(1);
+              }
+              
+              requestAnimationFrame(animate);
+            }
+            
+            // Start animation
+            animate();
+          })();
+          </script>
 
           <p>
             The RL demo showcases TestMachine's sophisticated approach to adversarial testing by visualizing how reinforcement learning agents explore contract state spaces, discover vulnerabilities, and generate verified exploit proofs. Unlike traditional static analysis tools that report potential issues, this demonstration shows agents actually exploiting contracts on forked blockchain environments—proving each vulnerability through execution rather than inference.
